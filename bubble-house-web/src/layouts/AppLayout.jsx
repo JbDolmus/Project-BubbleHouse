@@ -1,10 +1,9 @@
-import { Outlet } from "react-router-dom"
+import { Outlet } from "react-router-dom";
+
 export default function AppLayout() {
   return (
-    <>
-        <header></header>
-        <Outlet/>
-    </>
-    
-  )
+    <div className="min-h-screen flex flex-col items-center justify-start bg-[#a9dff0] bg-[url('/logo.png')] bg-no-repeat bg-center bg-[length:250px]">
+      <Outlet />
+    </div>
+  );
 }

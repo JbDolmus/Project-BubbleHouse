@@ -122,7 +122,7 @@ export default function RegisterView() {
 
       <nav className="mt-10 flex flex-col space-y-4">
         <Link
-          to={'/auth/login'}
+          to={'/'}
           className="text-center text-fuchsia-500 font-normal"
         >
           ¿Ya tienes una cuenta? {''}
