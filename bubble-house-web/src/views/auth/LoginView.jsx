@@ -1,6 +1,9 @@
 import { useForm } from "react-hook-form";
 import ErrorMessage from "@/components/ErrorMessage";
 import { Link } from "react-router-dom";
+import { FaEye, FaEyeSlash } from "react-icons/fa6";
+import { useState } from "react";
+import { Tooltip } from '@mui/material';
 
 export default function LoginView() {
 
@@ -9,8 +12,16 @@ export default function LoginView() {
     password: '',
   }
   const { register, handleSubmit, formState: { errors } } = useForm({ defaultValues: initialValues })
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = (formData) => { }
+
+  const togglePasswordVisibility = (field) => {
+    setShowPassword((prevState) => ({
+      ...prevState,
+      [field]: !prevState[field],
+    }));
+  };
 
   return (
     <>
@@ -42,7 +53,7 @@ export default function LoginView() {
           )}
         </div>
 
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-5 relative">
           <label
             className="font-normal text-2xl"
           >Password</label>
@@ -55,6 +66,15 @@ export default function LoginView() {
               required: "El Password es obligatorio",
             })}
           />
+          <Tooltip title={showPassword.repeatPassword ? "Ocultar" : "Mostrar"} placement='top'>
+            <button
+              type="button"
+              className="absolute right-3 flex items-center justify-center mt-16"
+              onClick={() => togglePasswordVisibility('repeatPassword')}
+            >
+              {showPassword.repeatPassword ? <FaEyeSlash /> : <FaEye />}
+            </button>
+          </Tooltip>
           {errors.password && (
             <ErrorMessage>{errors.password.message}</ErrorMessage>
           )}

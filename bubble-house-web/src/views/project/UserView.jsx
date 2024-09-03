@@ -52,7 +52,13 @@ export default function UserView() {
                 type="text"
                 placeholder="Nombre"
                 className="w-full p-3 border-gray-300 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                {...register("firstName", { required: "El nombre es obligatorio" })}
+                {...register("firstName", { 
+                  required: "El nombre es obligatorio",
+                  pattern: {
+                    value: /^[a-zA-ZáéíóúüÁÉÍÓÚÜñÑ\s]+$/,
+                    message: "El nombre solo puede contener letras y espacios",
+                  }, 
+                })}
               />
               {errors.firstName && <ErrorMessage>{errors.firstName.message}</ErrorMessage>}
             </div>
@@ -65,7 +71,13 @@ export default function UserView() {
                 type="text"
                 placeholder="Primer Apellido"
                 className="w-full p-3 border-gray-300 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                {...register("lastName1", { required: "El primer apellido es obligatorio" })}
+                {...register("lastName1", { 
+                  required: "El primer apellido es obligatorio",
+                  pattern: {
+                    value: /^[a-zA-ZáéíóúüÁÉÍÓÚÜñÑ\s]+$/,
+                    message: "El primer apellido solo puede contener letras y espacios",
+                  },
+                })}
               />
               {errors.lastName1 && <ErrorMessage>{errors.lastName1.message}</ErrorMessage>}
             </div>
@@ -78,7 +90,13 @@ export default function UserView() {
                 type="text"
                 placeholder="Segundo Apellido"
                 className="w-full p-3 border-gray-300 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                {...register("lastName2", { required: "El primer apellido es obligatorio" })}
+                {...register("lastName2", { 
+                  required: "El primer apellido es obligatorio",
+                  pattern: {
+                    value: /^[a-zA-ZáéíóúüÁÉÍÓÚÜñÑ\s]+$/,
+                    message: "El segundo apellido solo puede contener letras y espacios",
+                  },
+                })}
               />
               {errors.lastName2 && <ErrorMessage>{errors.lastName2.message}</ErrorMessage>}
             </div>
@@ -104,10 +122,14 @@ export default function UserView() {
               <label className="font-medium" htmlFor="phone">Teléfono</label>
               <input
                 id="phone"
-                type="text"
+                type="number"
                 placeholder="Teléfono"
                 className="w-full p-3 border-gray-300 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                {...register("phone", { required: "El teléfono es obligatorio" })}
+                {...register("phone", {
+                  required: "El teléfono es obligatorio",
+                  minLength: { value: 8, message: "Debe tener 8 caracteres" },
+                  maxLength: { value: 8, message: "Debe tener 8 caracteres" },
+                })}
               />
               {errors.phone && <ErrorMessage>{errors.phone.message}</ErrorMessage>}
             </div>
@@ -122,10 +144,10 @@ export default function UserView() {
                 className="w-full p-3 pr-10 border-gray-300 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                 {...register("currentPassword", { required: "La contraseña actual es obligatoria" })}
               />
-              <Tooltip title={showPassword.currentPassword ? "Ocultar" : "Mostrar"}>
+              <Tooltip title={showPassword.currentPassword ? "Ocultar" : "Mostrar"} placement='top'>
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-3 flex items-center justify-center h-full mt-4"
+                  className="absolute right-3 flex items-center justify-center mt-12"
                   onClick={() => togglePasswordVisibility('currentPassword')}
                 >
                   {showPassword.currentPassword ? <FaEyeSlash /> : <FaEye />}
@@ -147,10 +169,10 @@ export default function UserView() {
                   minLength: { value: 8, message: "Debe tener al menos 8 caracteres" }
                 })}
               />
-              <Tooltip title={showPassword.newPassword ? "Ocultar" : "Mostrar"}>
+              <Tooltip title={showPassword.newPassword ? "Ocultar" : "Mostrar"} placement='top'>
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-3 flex items-center justify-center h-full mt-4"
+                  className="absolute right-3 flex items-center justify-center mt-12"
                   onClick={() => togglePasswordVisibility('newPassword')}
                 >
                   {showPassword.newPassword ? <FaEyeSlash /> : <FaEye />}
@@ -172,10 +194,10 @@ export default function UserView() {
                   validate: value => value === newPassword || 'Las contraseñas no coinciden'
                 })}
               />
-              <Tooltip title={showPassword.repeatPassword ? "Ocultar" : "Mostrar"}>
+              <Tooltip title={showPassword.repeatPassword ? "Ocultar" : "Mostrar"} placement='top'>
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-3 flex items-center justify-center h-full mt-4"
+                  className="absolute right-3 flex items-center justify-center mt-12"
                   onClick={() => togglePasswordVisibility('repeatPassword')}
                 >
                   {showPassword.repeatPassword ? <FaEyeSlash /> : <FaEye />}
