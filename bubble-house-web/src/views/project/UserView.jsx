@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from "react-hook-form";
 import ErrorMessage from "@/components/ErrorMessage";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import NavBarPrincipal from '../../layouts/NavBarPrincipal';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUser } from '../../redux/thunks/userThunks';
 import { Tooltip } from '@mui/material';
 
 export default function UserView() {
@@ -25,6 +27,30 @@ export default function UserView() {
   });
 
   const newPassword = watch('newPassword');
+
+  const dispatch = useDispatch();
+  const { userSession, token } = useSelector(state => state.user);
+
+  useEffect(() => {
+    if (token) {
+      dispatch(getUser({ id: userSession.id, token }));
+    }
+  }, [dispatch, userSession.id, token]);
+
+  useEffect(() => {
+    if (userSession && userSession.data) {
+      reset({
+        firstName: userSession.data.firstName || '',
+        lastName1: userSession.data.lastName1 || '',
+        lastName2: userSession.data.lastName2 || '',
+        email: userSession.data.email || '',
+        phone: userSession.data.phone || '',
+        currentPassword: '',
+        newPassword: '',
+        repeatPassword: ''
+      });
+    }
+  }, [userSession, reset]);
 
   const handleUserUpdate = (formData) => {
     console.log('Datos del formulario:', formData);
@@ -52,12 +78,12 @@ export default function UserView() {
                 type="text"
                 placeholder="Nombre"
                 className="w-full p-3 border-gray-300 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                {...register("firstName", { 
+                {...register("firstName", {
                   required: "El nombre es obligatorio",
                   pattern: {
                     value: /^[a-zA-ZáéíóúüÁÉÍÓÚÜñÑ\s]+$/,
                     message: "El nombre solo puede contener letras y espacios",
-                  }, 
+                  },
                 })}
               />
               {errors.firstName && <ErrorMessage>{errors.firstName.message}</ErrorMessage>}
@@ -71,7 +97,7 @@ export default function UserView() {
                 type="text"
                 placeholder="Primer Apellido"
                 className="w-full p-3 border-gray-300 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                {...register("lastName1", { 
+                {...register("lastName1", {
                   required: "El primer apellido es obligatorio",
                   pattern: {
                     value: /^[a-zA-ZáéíóúüÁÉÍÓÚÜñÑ\s]+$/,
@@ -90,7 +116,7 @@ export default function UserView() {
                 type="text"
                 placeholder="Segundo Apellido"
                 className="w-full p-3 border-gray-300 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                {...register("lastName2", { 
+                {...register("lastName2", {
                   required: "El primer apellido es obligatorio",
                   pattern: {
                     value: /^[a-zA-ZáéíóúüÁÉÍÓÚÜñÑ\s]+$/,
