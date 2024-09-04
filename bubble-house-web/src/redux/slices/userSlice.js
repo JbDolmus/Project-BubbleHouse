@@ -1,23 +1,24 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
   loginUser,
-  createUser,
-  recoveryPassword,
-  renewPassword,
   refreshToken,
-  activateUser,
   editUser,
-  changePassword,
   deleteUser,
   closeSession,
   getSessionUser,
   cleanAlert,
+  addUser,
+  editUserPut,
+  getUsers,
+  getUser,
+  authMe,
 } from "../thunks/userThunks.js";
 
 const userSlice = createSlice({
   name: "user",
   initialState: {
     user: null,
+    users: [],
     token: null,
     refresh: null,
     userSession: null,
@@ -36,11 +37,8 @@ const userSlice = createSlice({
     builder.addCase(loginUser.fulfilled, (state, action) => {
       if (action.payload) {
         const data = action.payload;
-        console.log(data);
         state.token = data.access ? data.access : null;
         state.refresh = data.refresh ? data.refresh : null;
-        state.user = data.user ? data.user : null;
-        state.message = "Iniciando sesión.";
       } else {
         state.errorRedux = "Ocurrió un error al iniciar sesión.";
       }
@@ -49,82 +47,6 @@ const userSlice = createSlice({
     builder.addCase(loginUser.rejected, (state) => {
       state.loading = false;
       state.errorRedux = "Ocurrió un error al iniciar sesión.";
-    });
-
-    // Crear usuario
-    builder.addCase(createUser.pending, (state) => {
-      state.loading = true;
-      state.errorRedux = null;
-      state.message = "";
-    });
-    builder.addCase(createUser.fulfilled, (state, action) => {
-      if (action.payload.resultado) {
-        state.message = "Registro exitoso!";
-      } else {
-        state.errorRedux = "Ocurrió un error en el registro!";
-      }
-      state.loading = false;
-    });
-    builder.addCase(createUser.rejected, (state) => {
-      state.loading = false;
-      state.errorRedux = "Ocurrió un error en el registro!";
-    });
-
-    // Recuperar contraseña
-    builder.addCase(recoveryPassword.pending, (state) => {
-      state.loading = true;
-      state.errorRedux = null;
-      state.message = "";
-    });
-    builder.addCase(recoveryPassword.fulfilled, (state, action) => {
-      if (action.payload.resultado) {
-        state.message = "Te enviamos un correo para realizar la recuperación!";
-      } else {
-        state.errorRedux = "Ocurrió un error al recuperar cuenta!";
-      }
-      state.loading = false;
-    });
-    builder.addCase(recoveryPassword.rejected, (state) => {
-      state.loading = false;
-      state.errorRedux = "Ocurrió un error al recuperar cuenta!";
-    });
-
-    // Renovar contraseña
-    builder.addCase(renewPassword.pending, (state) => {
-      state.loading = true;
-      state.errorRedux = null;
-      state.message = "";
-    });
-    builder.addCase(renewPassword.fulfilled, (state, action) => {
-      if (action.payload.resultado) {
-        state.message = "Restableciendo contraseña con éxito!";
-      } else {
-        state.errorRedux = "Ocurrió un error al renovar la contraseña!";
-      }
-      state.loading = false;
-    });
-    builder.addCase(renewPassword.rejected, (state) => {
-      state.loading = false;
-      state.errorRedux = "Ocurrió un error al renovar la contraseña!";
-    });
-
-    // Activar cuenta
-    builder.addCase(activateUser.pending, (state) => {
-      state.loading = true;
-      state.errorRedux = null;
-      state.message = "";
-    });
-    builder.addCase(activateUser.fulfilled, (state, action) => {
-      if (action.payload.resultado) {
-        state.message = "Cuenta activada con éxito!";
-      } else {
-        state.errorRedux = "Ocurrió un error al activar cuenta!";
-      }
-      state.loading = false;
-    });
-    builder.addCase(activateUser.rejected, (state) => {
-      state.loading = false;
-      state.errorRedux = "Ocurrió un error al activar cuenta!";
     });
 
     // Refresh token
@@ -145,25 +67,6 @@ const userSlice = createSlice({
     builder.addCase(refreshToken.rejected, (state) => {
       state.loading = false;
       state.errorRedux = "Ocurrió un error al renovar el token!";
-    });
-
-    // Cambiar contraseña
-    builder.addCase(changePassword.pending, (state) => {
-      state.loading = true;
-      state.errorRedux = null;
-      state.message = "";
-    });
-    builder.addCase(changePassword.fulfilled, (state, action) => {
-      if (action.payload.resultado) {
-        state.message = "Cambio de contraseña exitoso!";
-      } else {
-        state.errorRedux = "Ocurrió un error al cambiar contraseña!";
-      }
-      state.loading = false;
-    });
-    builder.addCase(changePassword.rejected, (state) => {
-      state.loading = false;
-      state.errorRedux = "Ocurrió un error al cambiar contraseña";
     });
 
     // Editar usuario
@@ -196,7 +99,6 @@ const userSlice = createSlice({
     builder.addCase(deleteUser.fulfilled, (state, action) => {
       if (action.payload.resultado) {
         state.message = "Eliminando cuenta!";
-        state.userSession = null;
         state.token = null;
         state.message = "";
         state.loading = false;
@@ -264,6 +166,82 @@ const userSlice = createSlice({
       state.loading = false;
       state.errorRedux = null;
       state.message = "";
+    });
+
+    // Agregar usuario
+    builder.addCase(addUser.pending, (state) => {
+      state.loading = true;
+      state.errorRedux = null;
+    });
+    builder.addCase(addUser.fulfilled, (state, action) => {
+      state.loading = false;
+      state.message = "Usuario agregado con éxito!";
+    });
+    builder.addCase(addUser.rejected, (state) => {
+      state.loading = false;
+      state.errorRedux = "Ocurrió un error al agregar el usuario!";
+    });
+
+    // Editar usuario por put
+    builder.addCase(editUserPut.pending, (state) => {
+      state.loading = true;
+      state.errorRedux = null;
+    });
+    builder.addCase(editUserPut.fulfilled, (state, action) => {
+      state.loading = false;
+      state.message = "Usuario actualizado con éxito!";
+    });
+    builder.addCase(editUserPut.rejected, (state) => {
+      state.loading = false;
+      state.errorRedux = "Ocurrió un error al actualizar el usuario!";
+    });
+
+    // Obtener usuarios
+    builder.addCase(getUsers.pending, (state) => {
+      state.loading = true;
+      state.errorRedux = null;
+    });
+    builder.addCase(getUsers.fulfilled, (state, action) => {
+      state.loading = false;
+      state.users = action.payload;
+    });
+    builder.addCase(getUsers.rejected, (state) => {
+      state.loading = false;
+      state.errorRedux = "Ocurrió un error al obtener los usuarios!";
+    });
+
+    // Obtener un usuario
+    builder.addCase(getUser.pending, (state) => {
+      state.loading = true;
+      state.errorRedux = null;
+    });
+    builder.addCase(getUser.fulfilled, (state, action) => {
+      state.loading = false;
+      state.userSession = action.payload;
+    });
+    builder.addCase(getUser.rejected, (state) => {
+      state.loading = false;
+      state.errorRedux = "Ocurrió un error al obtener el usuario!";
+    });
+
+    // Autenticación
+    builder.addCase(authMe.pending, (state) => {
+      state.loading = true;
+      state.errorRedux = null;
+    });
+    builder.addCase(authMe.fulfilled, (state, action) => {
+      if(action.payload.state){
+        state.loading = false;
+      state.user = action.payload.data;
+      }else{
+        state.loading = false;
+        state.errorRedux = action.payload.message;
+      }
+      
+    });
+    builder.addCase(authMe.rejected, (state) => {
+      state.loading = false;
+      state.errorRedux = "Ocurrió un error al autenticar el usuario!";
     });
   },
 });
