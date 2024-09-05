@@ -6,6 +6,9 @@ from rol.models import Rol
 
 # Create your models here.
 class User(AbstractUser):
+    first_name = None
+    last_name = None
+    groups = None
     email = models.EmailField(unique=True)
     rolls = models.ManyToManyField(Rol, blank=True)
     state = models.BooleanField(default=True)
