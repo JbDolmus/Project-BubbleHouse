@@ -91,7 +91,7 @@ export default function FormUserView({ isVisible, onClose, refreshUsers, selecte
                     onClose();
                     reset();
                     refreshUsers();
-                    dispatch
+                    dispatch(cleanAlert());
                 })
         } else {
             dispatch(addUser(userData))
@@ -102,7 +102,7 @@ export default function FormUserView({ isVisible, onClose, refreshUsers, selecte
                     onClose();
                     reset();
                     refreshUsers();
-
+                    dispatch(cleanAlert());
                 })
         }
     };
@@ -122,6 +122,7 @@ export default function FormUserView({ isVisible, onClose, refreshUsers, selecte
                         onClose();
                         reset();
                         refreshUsers();
+                        dispatch(cleanAlert());
                     }, 0);
                 })
         });

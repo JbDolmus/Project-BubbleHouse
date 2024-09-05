@@ -5,7 +5,7 @@ import NavBarPrincipal from '../../layouts/NavBarPrincipal';
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { Tooltip } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { authMe, editUser } from '../../redux/thunks/userThunks';
+import { authMe, editUser, cleanAlert } from '../../redux/thunks/userThunks';
 import { ToastSuccess, ToastError } from '@/assets/js/toastify.js';
 import { useNavigate } from 'react-router-dom';
 
@@ -69,6 +69,7 @@ export default function UserView() {
       .then(() => {
         ToastSuccess("Usuario actualizado con éxito");
         navigate('/orders');
+        dispatch(cleanAlert());
       })
   };
 
