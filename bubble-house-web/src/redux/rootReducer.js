@@ -6,7 +6,7 @@ import userSlice from "./slices/userSlice";
 const userPersistConfig = {
   key: "user",
   storage,
-  whitelist: ["user", "userSession", "token", "refresh"],
+  whitelist: ["user", "userSession", "users", "token", "refresh"],
 };
 
 
