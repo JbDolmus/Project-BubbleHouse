@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useForm } from "react-hook-form";
 import ErrorMessage from "@/components/ErrorMessage";
 import NavBarPrincipal from '../../layouts/NavBarPrincipal';
+import { FaEye, FaEyeSlash } from "react-icons/fa6";
+import { Tooltip } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { authMe, editUser, getUser } from '../../redux/thunks/userThunks';
+import { authMe, editUser } from '../../redux/thunks/userThunks';
 import { ToastSuccess, ToastError } from '@/assets/js/toastify.js';
 import { useNavigate } from 'react-router-dom';
 
@@ -14,42 +16,47 @@ export default function UserView() {
   const initialValues = {
     userName: '',
     email: '',
+    currentPassword: '',
+    newPassword: '',
+    repeatPassword: ''
   };
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm({ defaultValues: initialValues });
+  const { register, handleSubmit, watch, reset, formState: { errors } } = useForm({ defaultValues: initialValues });
+  const [showPassword, setShowPassword] = useState({
+    currentPassword: false,
+    newPassword: false,
+    repeatPassword: false,
+  });
+
+  const newPassword = watch('newPassword');
 
   const dispatch = useDispatch();
-  const { token, user, userSession } = useSelector(state => state.user);
+  const { token, user } = useSelector(state => state.user);
 
   useEffect(() => {
     if (token) {
       dispatch(authMe(token));
-      dispatch(getUser({ token:token, id: user?.id }));
-    } else {
-      console.error("Token no disponible");
-      ToastError("Token no disponible");
     }
   }, [dispatch, token]);
 
   useEffect(() => {
-    if (userSession) {
+    if (user) {
       reset({
-        userName: userSession.username || '',
-        email: userSession.email || '',
+        userName: user.username || '',
+        email: user.email || '',
       });
     }
-  }, [userSession, reset]);
+  }, [user, reset]);
 
 
   const handleUserUpdate = (formData) => {
-    if (!token || !userSession?.id) {
-      console.error("Token o ID de usuario no disponible");
-      ToastError("Token o ID de usuario no disponible");
+    if (!user?.id) {
+      ToastError("ID de usuario no disponible");
       return;
     }
 
     const userData = {
-      id: userSession.id,
+      id: user.id,
       token: token,
       usuario: {
         username: formData.userName,
@@ -59,15 +66,17 @@ export default function UserView() {
 
     dispatch(editUser(userData))
       .unwrap()
-      .then((response) => {
-        console.log('Usuario actualizado con éxito:', response);
+      .then(() => {
         ToastSuccess("Usuario actualizado con éxito");
         navigate('/orders');
       })
-      .catch((error) => {
-        console.error('Error al actualizar el usuario:', error);
-        ToastError("Error al actualizar el usuario");
-      });
+  };
+
+  const togglePasswordVisibility = (field) => {
+    setShowPassword((prevState) => ({
+      ...prevState,
+      [field]: !prevState[field],
+    }));
   };
 
   return (
@@ -110,6 +119,81 @@ export default function UserView() {
                 })}
               />
               {errors.email && <ErrorMessage>{errors.email.message}</ErrorMessage>}
+            </div>
+
+            {/* Contraseña Actual */}
+            <div className="flex flex-col gap-2 relative">
+              <label className="font-medium" htmlFor="currentPassword">Contraseña Actual</label>
+              <input
+                id="currentPassword"
+                type={showPassword.currentPassword ? "text" : "password"}
+                placeholder="Contraseña Actual"
+                className="w-full p-3 pr-10 border-gray-300 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                {...register("currentPassword", { required: "La contraseña actual es obligatoria" })}
+              />
+              <Tooltip title={showPassword.currentPassword ? "Ocultar" : "Mostrar"}>
+                <button
+                  type="button"
+                  className="absolute right-3 flex items-center justify-center"
+                  style={{ marginTop: "3rem" }}
+                  onClick={() => togglePasswordVisibility('currentPassword')}
+                >
+                  {showPassword.currentPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </Tooltip>
+              {errors.currentPassword && <ErrorMessage>{errors.currentPassword.message}</ErrorMessage>}
+            </div>
+
+            {/* Nueva Contraseña */}
+            <div className="flex flex-col gap-2 relative">
+              <label className="font-medium" htmlFor="newPassword">Nueva Contraseña</label>
+              <input
+                id="newPassword"
+                type={showPassword.newPassword ? "text" : "password"}
+                placeholder="Nueva Contraseña"
+                className="w-full p-3 pr-10 border-gray-300 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                {...register("newPassword", {
+                  required: "La nueva contraseña es obligatoria",
+                  minLength: { value: 8, message: "Debe tener al menos 8 caracteres" }
+                })}
+              />
+              <Tooltip title={showPassword.newPassword ? "Ocultar" : "Mostrar"}>
+                <button
+                  type="button"
+                  className="absolute right-3 flex items-center justify-center"
+                  style={{ marginTop: "3rem" }}
+                  onClick={() => togglePasswordVisibility('newPassword')}
+                >
+                  {showPassword.newPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </Tooltip>
+              {errors.newPassword && <ErrorMessage>{errors.newPassword.message}</ErrorMessage>}
+            </div>
+
+            {/* Repetir Contraseña */}
+            <div className="flex flex-col gap-2 relative">
+              <label className="font-medium" htmlFor="repeatPassword">Repita Contraseña</label>
+              <input
+                id="repeatPassword"
+                type={showPassword.repeatPassword ? "text" : "password"}
+                placeholder="Repita Contraseña"
+                className="w-full p-3 pr-10 border-gray-300 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                {...register("repeatPassword", {
+                  required: "Repetir la contraseña es obligatorio",
+                  validate: value => value === newPassword || 'Las contraseñas no coinciden'
+                })}
+              />
+              <Tooltip title={showPassword.repeatPassword ? "Ocultar" : "Mostrar"}>
+                <button
+                  type="button"
+                  className="absolute right-3 flex items-center justify-center"
+                  style={{ marginTop: "3rem" }}
+                  onClick={() => togglePasswordVisibility('repeatPassword')}
+                >
+                  {showPassword.repeatPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </Tooltip>
+              {errors.repeatPassword && <ErrorMessage>{errors.repeatPassword.message}</ErrorMessage>}
             </div>
 
             <input

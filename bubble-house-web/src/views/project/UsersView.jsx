@@ -8,35 +8,36 @@ import FormUserView from './FormUserView';
 
 export default function UsersView() {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);  // Estado para usuario seleccionado
+  const [selectedUser, setSelectedUser] = useState(null);
   const dispatch = useDispatch();
   const { users, token, errorRedux } = useSelector(state => state.user);
 
-  // Función para cargar los usuarios
   const loadUsers = () => {
+
     if (token) {
       dispatch(getUsers(token));
-    } else {
-      ToastError("Token no disponible");
     }
   };
 
   useEffect(() => {
-    loadUsers();  // Cargar los usuarios cuando el componente se monta
+    loadUsers();  
   }, [dispatch, token]);
 
-  if (errorRedux) {
-    ToastError(errorRedux);
-  }
+  useEffect(() => {
+    if (errorRedux) {
+      ToastError(errorRedux);
+    }
+  }, [errorRedux]);
+  
 
   const showModal = (user = null) => {
-    setSelectedUser(user);  // Establecer el usuario seleccionado si existe
+    setSelectedUser(user);
     setIsModalVisible(true);
   };
 
   const handleCancel = () => {
     setIsModalVisible(false);
-    setSelectedUser(null);  // Restablecer el usuario seleccionado
+    setSelectedUser(null);
   };
 
   return (
