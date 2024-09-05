@@ -55,11 +55,12 @@ export const addUser = createAsyncThunk("user/addUser", async (data) => {
 
 // Get users
 export const getUsers = createAsyncThunk("user/getUsers", async (token) => {
-  const response = await fetch(`${urlBase}/user`, {
+  const response = await fetch(`${urlBase}/user/`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
+      Accept: "application/json",
     },
   });
 
@@ -111,7 +112,6 @@ export const editUser = createAsyncThunk("user/editUser", async (data) => {
 
 // Edit user PUT
 export const editUserPut = createAsyncThunk("user/editUserPut", async (data) => {
-  console.log(data);
   const response = await fetch(`${urlBase}/user/${data.id}/`, {
     method: "PUT",
     headers: {
@@ -122,7 +122,6 @@ export const editUserPut = createAsyncThunk("user/editUserPut", async (data) => 
     body: JSON.stringify(data.user),
   });
   const jsonResponse = await response.json();
-  console.log(jsonResponse);
   return jsonResponse;
 });
 
@@ -138,8 +137,12 @@ export const deleteUser = createAsyncThunk("user/deleteUser", async (data) => {
     },
   });
 
-  const jsonResponse = await response.json();
-  return jsonResponse;
+  if (response.status === 204) {
+    return { success: true };
+  } else {
+    
+    return { success: false };
+  }
 });
 
 

@@ -5,13 +5,14 @@ import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { useState } from "react";
 import { Tooltip } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginUser } from '../../redux/thunks/userThunks';
+import { loginUser, cleanAlert } from '../../redux/thunks/userThunks';
+import { ToastSuccess } from "@/assets/js/toastify";
 
 export default function LoginView() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { register, handleSubmit, formState: { errors } } = useForm({ defaultValues: { email: '', password: '' } });
+  const { register, handleSubmit, formState: { errors } } = useForm({ defaultValues: { email: 'jbautista.dormo.corea@gmail.com', password: 'admin123' } });
   const [showPassword, setShowPassword] = useState(false);
 
   const {  errorRedux, loading } = useSelector((state) => state.user);
@@ -20,6 +21,8 @@ export default function LoginView() {
     try {
       await dispatch(loginUser(formData)).unwrap();
       navigate('/orders');
+      ToastSuccess("Inicio de sesión exitosa");
+      dispatch(cleanAlert());
     } catch (error) {
       console.error("Error during login:", error);
     }

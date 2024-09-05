@@ -57,8 +57,8 @@ const userSlice = createSlice({
     });
     builder.addCase(refreshToken.fulfilled, (state, action) => {
       if (action.payload.resultado) {
-        state.token = action.payload.token;
-        sessionStorage.setItem("token", JSON.stringify(action.payload.token));
+        state.token = action.payload.access;
+        sessionStorage.setItem("token", JSON.stringify(action.payload.access));
       } else {
         closeSession();
       }
@@ -97,21 +97,17 @@ const userSlice = createSlice({
       state.message = "";
     });
     builder.addCase(deleteUser.fulfilled, (state, action) => {
-      if (action.payload.resultado) {
-        state.message = "Eliminando cuenta!";
-        state.token = null;
+      if (action.payload.success) {
         state.message = "";
         state.loading = false;
-        sessionStorage.removeItem("user");
-        sessionStorage.removeItem("token");
       } else {
-        state.errorRedux = "Ocurrió un error al eliminar la cuenta!";
+        state.errorRedux = "Ocurrió un error al eliminar el usuario!";
       }
       state.loading = false;
     });
     builder.addCase(deleteUser.rejected, (state) => {
       state.loading = false;
-      state.errorRedux = "Ocurrió un error al eliminar la cuenta!";
+      state.errorRedux = "Ocurrió un error al eliminar el usuario!";
     });
 
     // Obtener sesión usuario
@@ -141,6 +137,8 @@ const userSlice = createSlice({
     builder.addCase(closeSession.fulfilled, (state) => {
       state.user = null;
       state.token = null;
+      state.users = [];
+      state.userSession = null;
       state.message = "";
       state.loading = false;
       sessionStorage.removeItem("user");
@@ -174,10 +172,12 @@ const userSlice = createSlice({
       state.errorRedux = null;
     });
     builder.addCase(addUser.fulfilled, (state, action) => {
+      
       state.loading = false;
       state.message = "Usuario agregado con éxito!";
     });
     builder.addCase(addUser.rejected, (state) => {
+      
       state.loading = false;
       state.errorRedux = "Ocurrió un error al agregar el usuario!";
     });

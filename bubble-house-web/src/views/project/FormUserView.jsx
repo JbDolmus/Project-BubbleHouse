@@ -1,42 +1,78 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Button } from 'antd';
 import { useForm } from 'react-hook-form';
 import ErrorMessage from '@/components/ErrorMessage';
+import { FaEye, FaEyeSlash } from "react-icons/fa6";
+import { Tooltip } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { addUser, editUserPut, deleteUser } from '../../redux/thunks/userThunks';
+import { addUser, editUserPut, deleteUser, cleanAlert } from '../../redux/thunks/userThunks';
 import { ToastSuccess, ToastError } from '@/assets/js/toastify.js';
+import { SweetAlertEliminar } from '@/assets/js/sweetAlert.js';
 
 export default function FormUserView({ isVisible, onClose, refreshUsers, selectedUser }) {
     const dispatch = useDispatch();
-    const { token } = useSelector(state => state.user);
+    const { token, users } = useSelector(state => state.user);
 
     const {
         register,
         handleSubmit,
         reset,
+        watch,
         formState: { errors },
         setValue,
     } = useForm({
         defaultValues: {
             userName: '',
             email: '',
+            newPassword: '',
+            repeatPassword: '',
         }
     });
+
+    const [showPassword, setShowPassword] = useState({
+        newPassword: false,
+        repeatPassword: false,
+    });
+
+    const newPassword = watch('newPassword');
 
     useEffect(() => {
         if (selectedUser) {
             setValue('userName', selectedUser.username);
             setValue('email', selectedUser.email);
+            setValue('newPassword', '########');
+            setValue('repeatPassword', '########');
         } else {
             reset();
         }
     }, [selectedUser, setValue, reset]);
+
+    const isDuplicateUser = (formData) => {
+        const isDuplicateEmail = users.results.some(user => user.email === formData.email && user.id !== selectedUser?.id);
+        const isDuplicateUsername = users.results.some(user => user.username === formData.userName && user.id !== selectedUser?.id);
+
+        if (isDuplicateEmail && isDuplicateUsername) {
+            ToastError("El correo y el nombre de usuario ya estan en uso.");
+            return true;
+        } else if (isDuplicateUsername) {
+            ToastError("El nombre de usuario ya está en uso.");
+            return true;
+        } else if (isDuplicateEmail) {
+            ToastError("El correo ya está en uso.");
+            return true;
+        }
+
+        return false;
+    };
+
 
     const handleAddOrEditUser = (formData) => {
         if (!token) {
             ToastError("Token no disponible");
             return;
         }
+
+        if (isDuplicateUser(formData)) return;
 
         const userData = {
             id: selectedUser?.id,
@@ -50,36 +86,24 @@ export default function FormUserView({ isVisible, onClose, refreshUsers, selecte
         if (selectedUser) {
             dispatch(editUserPut(userData))
                 .unwrap()
-                .then((response) => {
-                    console.log(response);
+                .then(() => {
                     ToastSuccess("Usuario actualizado con éxito");
                     onClose();
                     reset();
                     refreshUsers();
+                    dispatch
                 })
-                .catch((error) => {
-                    console.error('Error al actualizar el usuario:', error);
-                    ToastError("Error al actualizar el usuario");
-                });
         } else {
             dispatch(addUser(userData))
                 .unwrap()
-                .then((response) => {
-                    console.log(response.email);
-                    if (response.email) {
-                        ToastError("El email ya existe");
-                    } else {
-                        ToastSuccess("Usuario agregado con éxito");
-                        onClose();
-                        reset();
-                        refreshUsers();
-                    }
+                .then(() => {
+
+                    ToastSuccess("Usuario agregado con éxito");
+                    onClose();
+                    reset();
+                    refreshUsers();
 
                 })
-                .catch((error) => {
-                    console.error('Error al agregar el usuario:', error);
-                    ToastError("Error al agregar el usuario");
-                });
         }
     };
 
@@ -89,24 +113,26 @@ export default function FormUserView({ isVisible, onClose, refreshUsers, selecte
             return;
         }
 
-        dispatch(deleteUser({ id: selectedUser.id, token }))
-            .unwrap()
-            .then((response) => {
-                console.log('Usuario eliminado con éxito:', response);
-                ToastSuccess("Usuario eliminado con éxito");
-
-                setTimeout(() => {
-                    onClose();
-                    reset();
-                    refreshUsers();
-                }, 1000);
-            })
-            .catch((error) => {
-                console.error('Error al eliminar el usuario:', error);
-                ToastError("Error al eliminar el usuario");
-            });
+        SweetAlertEliminar("¿Estás seguro de que deseas eliminar este usuario?", () => {
+            dispatch(deleteUser({ id: selectedUser.id, token }))
+                .unwrap()
+                .then(() => {
+                    ToastSuccess("Usuario eliminado con éxito");
+                    setTimeout(() => {
+                        onClose();
+                        reset();
+                        refreshUsers();
+                    }, 0);
+                })
+        });
     };
 
+    const togglePasswordVisibility = (field) => {
+        setShowPassword((prevState) => ({
+            ...prevState,
+            [field]: !prevState[field],
+        }));
+    };
 
     return (
         <Modal
@@ -156,18 +182,72 @@ export default function FormUserView({ isVisible, onClose, refreshUsers, selecte
                     {errors.email && <ErrorMessage>{errors.email.message}</ErrorMessage>}
                 </div>
 
+                {/* Nueva Contraseña */}
+                <div className={`flex flex-col gap-2 relative ${!selectedUser ? "block" : "hidden"}`}>
+                    <label className="font-medium" htmlFor="newPassword">Nueva Contraseña</label>
+                    <input
+                        id="newPassword"
+                        type={showPassword.newPassword ? "text" : "password"}
+                        placeholder="Nueva Contraseña"
+                        className="w-full p-3 pr-10 border-gray-300 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        {...register("newPassword", {
+                            required: "La nueva contraseña es obligatoria",
+                            minLength: { value: 8, message: "Debe tener al menos 8 caracteres" }
+                        })}
+                    />
+                    <Tooltip title={showPassword.newPassword ? "Ocultar" : "Mostrar"}>
+                        <button
+                            type="button"
+                            className="absolute right-3 flex items-center justify-center"
+                            style={{ marginTop: "3rem" }}
+                            onClick={() => togglePasswordVisibility('newPassword')}
+                        >
+                            {showPassword.newPassword ? <FaEyeSlash /> : <FaEye />}
+                        </button>
+                    </Tooltip>
+                    {errors.newPassword && <ErrorMessage>{errors.newPassword.message}</ErrorMessage>}
+                </div>
+
+                {/* Repetir Contraseña */}
+                <div className={`flex flex-col gap-2 relative ${!selectedUser ? "block" : "hidden"}`} >
+                    <label className="font-medium" htmlFor="repeatPassword">Repita Contraseña</label>
+                    <input
+                        id="repeatPassword"
+                        type={showPassword.repeatPassword ? "text" : "password"}
+                        placeholder="Repita Contraseña"
+                        className="w-full p-3 pr-10 border-gray-300 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        {...register("repeatPassword", {
+                            required: "Repetir la contraseña es obligatorio",
+                            validate: value => value === newPassword || 'Las contraseñas no coinciden'
+                        })}
+                    />
+                    <Tooltip title={showPassword.repeatPassword ? "Ocultar" : "Mostrar"}>
+                        <button
+                            type="button"
+                            className="absolute right-3 flex items-center justify-center"
+                            style={{ marginTop: "3rem" }}
+                            onClick={() => togglePasswordVisibility('repeatPassword')}
+                        >
+                            {showPassword.repeatPassword ? <FaEyeSlash /> : <FaEye />}
+                        </button>
+                    </Tooltip>
+                    {errors.repeatPassword && <ErrorMessage>{errors.repeatPassword.message}</ErrorMessage>}
+                </div>
+
+
                 <Button type="primary" htmlType="submit" className="w-full">
                     {selectedUser ? "Actualizar Usuario" : "Agregar Usuario"}
                 </Button>
 
                 {selectedUser && (
-                    <Button
-                        type="danger"
-                        className="w-full mt-2"
+                    <button
+                        type='button'
+                        className="w-full bg-red-500 text-white hover:bg-red-600 hover:text-white rounded-md"
+                        style={{ padding: '0.32rem 0' }}
                         onClick={handleDeleteUser}
                     >
                         Eliminar Usuario
-                    </Button>
+                    </button>
                 )}
             </form>
         </Modal>
