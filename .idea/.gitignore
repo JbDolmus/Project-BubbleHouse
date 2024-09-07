@@ -1,8 +1,69 @@
-# Default ignored files
-/shelf/
-/workspace.xml
-# Editor-based HTTP Client requests
-/httpRequests/
-# Datasource local storage ignored files
-/dataSources/
-/dataSources.local.xml
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+*.egg-info/
+*.egg
+*.whl
+*.manifest
+*.spec
+
+# Django
+*.log
+*.pot
+*.pyc
+.DS_Store
+*.mo
+*.pot
+db.sqlite3
+media/
+staticfiles/
+
+# Environment
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# VS Code
+.vscode/
+
+# MacOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# React
+node_modules/
+npm-debug.log*
+yarn-error.log
+yarn-debug.log*
+yarn.lock
+package-lock.json
+public/favicon.ico
+public/manifest.json
+
+# Build artifacts
+build/
+dist/
+coverage/
+.eslintcache
+.cache/
+.idea/
+
+# Test outputs
+junit.xml
+test-results/
+test-output/
+
+# Logs
+*.log
+
+# dotenv
+.env
