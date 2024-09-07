@@ -66,4 +66,5 @@ test-output/
 *.log
 
 # dotenv
+.env/
 .env
