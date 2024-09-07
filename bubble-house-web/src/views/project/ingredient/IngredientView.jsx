@@ -1,5 +1,5 @@
 import React from 'react'
-import NavBarPrincipal from '../../layouts/NavBarPrincipal'
+import NavBarPrincipal from '../../../layouts/NavBarPrincipal'
 
 export default function IngredientView() {
   return (

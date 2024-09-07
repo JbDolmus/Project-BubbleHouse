@@ -5,7 +5,7 @@ import ErrorMessage from '@/components/ErrorMessage';
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { Tooltip } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { addUser, editUserPut, deleteUser, cleanAlert } from '../../redux/thunks/userThunks';
+import { addUser, editUserPut, deleteUser, cleanAlert } from '@/redux/thunks/userThunks';
 import { ToastSuccess, ToastError } from '@/assets/js/toastify.js';
 import { SweetAlertEliminar } from '@/assets/js/sweetAlert.js';
 

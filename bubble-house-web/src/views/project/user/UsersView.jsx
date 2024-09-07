@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { FaPlus } from "react-icons/fa6";
-import NavBarPrincipal from '../../layouts/NavBarPrincipal';
+import NavBarPrincipal from '@/layouts/NavBarPrincipal';
 import { useDispatch, useSelector } from 'react-redux';
-import { getUsers } from '../../redux/thunks/userThunks';
+import { getUsers } from '@/redux/thunks/userThunks';
 import { ToastError } from '@/assets/js/toastify.js';
 import FormUserView from './FormUserView';
 
@@ -49,7 +49,7 @@ export default function UsersView() {
           <button
             type='button'
             onClick={() => showModal()}
-            className="flex flex-col items-center bg-blue-500 hover:bg-blue-600 text-white font-bold px-32 py-8 md:px-6 md:py-2 md:flex-row rounded"
+            className="flex flex-col items-center bg-blue-500 hover:bg-blue-600 text-white font-bold px-32 py-4 md:px-6 md:py-2 md:flex-row rounded"
           >
             <FaPlus className="text-3xl md:text-xl md:mx-1" />
             Nuevo Usuario

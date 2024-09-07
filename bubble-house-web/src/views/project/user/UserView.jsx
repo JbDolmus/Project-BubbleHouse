@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from "react-hook-form";
 import ErrorMessage from "@/components/ErrorMessage";
-import NavBarPrincipal from '../../layouts/NavBarPrincipal';
+import NavBarPrincipal from '@/layouts/NavBarPrincipal';
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { Tooltip } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { authMe, editUser, cleanAlert } from '../../redux/thunks/userThunks';
+import { authMe, editUser, cleanAlert } from '@/redux/thunks/userThunks';
 import { ToastSuccess, ToastError } from '@/assets/js/toastify.js';
 import { useNavigate } from 'react-router-dom';
 
