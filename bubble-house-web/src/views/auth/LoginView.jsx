@@ -2,11 +2,11 @@ import { useForm } from "react-hook-form";
 import ErrorMessage from "@/components/ErrorMessage";
 import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Tooltip } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser, cleanAlert } from '../../redux/thunks/userThunks';
-import { ToastSuccess } from "@/assets/js/toastify";
+import { SweetAlertError, SweetAlertSuccess } from "../../assets/js/sweetAlert";
 
 export default function LoginView() {
   const dispatch = useDispatch();
@@ -15,16 +15,16 @@ export default function LoginView() {
   const { register, handleSubmit, formState: { errors } } = useForm({ defaultValues: { email: 'jbautista.dormo.corea@gmail.com', password: 'admin123' } });
   const [showPassword, setShowPassword] = useState(false);
 
-  const {  errorRedux, loading } = useSelector((state) => state.user);
+  const { errorRedux, loading } = useSelector((state) => state.user);
 
   const handleLogin = async (formData) => {
     try {
       await dispatch(loginUser(formData)).unwrap();
       navigate('/orders');
-      ToastSuccess("Inicio de sesión exitosa");
+      SweetAlertSuccess("Inicio de sesión exitosa");
       dispatch(cleanAlert());
     } catch (error) {
-      console.error("Error during login:", error);
+      SweetAlertError("Error al iniciar sesión");
     }
   };
 
@@ -86,7 +86,7 @@ export default function LoginView() {
           className={`bg-fuchsia-600 hover:bg-fuchsia-700 w-full p-3 text-white font-black text-xl cursor-pointer rounded-md ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
           disabled={loading}
         />
-        {errorRedux && <ErrorMessage>{errorRedux}</ErrorMessage>}
+        
       </form>
 
       <nav className="mt-10 flex flex-col space-y-4">
