@@ -28,6 +28,8 @@ ENV/
 env.bak/
 venv.bak/
 
+.env/
+
 # VS Code
 .vscode/
 
@@ -66,5 +68,5 @@ test-output/
 *.log
 
 # dotenv
-.env/
+
 .env
