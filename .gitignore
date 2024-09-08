@@ -1,0 +1,60 @@
+# Dependencias de Node
+node_modules/
+
+# Salida de construcción
+dist/
+
+# Archivos de registro
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Directorios de dependencias
+.pnp/
+.pnp.js
+
+# Variables de entorno
+.env
+.env.*
+!.env.example
+
+# Directorios de pruebas y cobertura
+coverage/
+
+# Archivos de caché y configuración de herramientas
+.cache/
+*.cache
+*.eslintcache
+*.tsbuildinfo
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Archivos de configuración de editores
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Salida de Vite
+.vite/
+
+# Otros archivos generados por npm
+*.orig
+
+# Caché opcional de npm
+.npm
+
+# Archivos de bloqueo de paquetes
+yarn.lock
+pnpm-lock.yaml
+
+# Archivos de Storybook
+.out/
+.storybook/
+.stories.mdx
