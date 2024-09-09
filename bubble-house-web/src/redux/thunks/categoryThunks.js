@@ -4,7 +4,7 @@ const urlBase = "http://127.0.0.1:8000/api";
 
 // Add category
 export const addCategory = createAsyncThunk("category/addCategory", async (data) => {
-    const response = await fetch(`${urlBase}/category/`, {
+    const response = await fetch(`${urlBase}/productcategory/`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -19,7 +19,7 @@ export const addCategory = createAsyncThunk("category/addCategory", async (data)
 
 // Get categories
 export const getCategories = createAsyncThunk("category/getCategories", async (token) => {
-    const response = await fetch(`${urlBase}/category/`, {
+    const response = await fetch(`${urlBase}/productcategory/`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -33,7 +33,7 @@ export const getCategories = createAsyncThunk("category/getCategories", async (t
 
 // Get an category
 export const getCategory = createAsyncThunk("category/getCategory", async (data) => {
-    const response = await fetch(`${urlBase}/category/${data.id}`, {
+    const response = await fetch(`${urlBase}/productcategory/${data.id}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -46,14 +46,14 @@ export const getCategory = createAsyncThunk("category/getCategory", async (data)
 
 // Edit category PATCH
 export const editCategory = createAsyncThunk("category/editCategory", async (data) => {
-    const response = await fetch(`${urlBase}/category/${data.id}/`, {
+    const response = await fetch(`${urlBase}/productcategory/${data.id}/`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${data.token}`,
             Accept: "application/json",
         },
-        body: JSON.stringify(data.usuario),
+        body: JSON.stringify(data.category),
     });
     const jsonResponse = await response.json();
     return jsonResponse;
@@ -61,7 +61,7 @@ export const editCategory = createAsyncThunk("category/editCategory", async (dat
 
 // Edit category PUT
 export const editCategoryPut = createAsyncThunk("category/editCategoryPut", async (data) => {
-    const response = await fetch(`${urlBase}/category/${data.id}/`, {
+    const response = await fetch(`${urlBase}/productcategory/${data.id}/`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
@@ -77,7 +77,7 @@ export const editCategoryPut = createAsyncThunk("category/editCategoryPut", asyn
 
 // Delete category
 export const deleteCategory = createAsyncThunk("category/deleteCategory", async (data) => {
-    const response = await fetch(`${urlBase}/category/${data.id}/`, {
+    const response = await fetch(`${urlBase}/productcategory/${data.id}/`, {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",

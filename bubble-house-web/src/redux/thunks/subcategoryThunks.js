@@ -4,7 +4,7 @@ const urlBase = "http://127.0.0.1:8000/api";
 
 // Add subcategory
 export const addSubcategory = createAsyncThunk("subcategory/addSubcategory", async (data) => {
-    const response = await fetch(`${urlBase}/subcategory/`, {
+    const response = await fetch(`${urlBase}/productsubcategory/`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -19,7 +19,7 @@ export const addSubcategory = createAsyncThunk("subcategory/addSubcategory", asy
 
 // Get subcategories
 export const getSubcategories = createAsyncThunk("subcategory/getSubcategories", async (token) => {
-    const response = await fetch(`${urlBase}/subcategory/`, {
+    const response = await fetch(`${urlBase}/productsubcategory/`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -33,7 +33,7 @@ export const getSubcategories = createAsyncThunk("subcategory/getSubcategories",
 
 // Get an subcategory
 export const getsubCategory = createAsyncThunk("subcategory/getSubcategory", async (data) => {
-    const response = await fetch(`${urlBase}/subcategory/${data.id}`, {
+    const response = await fetch(`${urlBase}/productsubcategory/${data.id}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -46,7 +46,7 @@ export const getsubCategory = createAsyncThunk("subcategory/getSubcategory", asy
 
 // Edit subcategory PATCH
 export const editSubcategory = createAsyncThunk("subcategory/editSubcategory", async (data) => {
-    const response = await fetch(`${urlBase}/subcategory/${data.id}/`, {
+    const response = await fetch(`${urlBase}/productsubcategory/${data.id}/`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
@@ -61,7 +61,7 @@ export const editSubcategory = createAsyncThunk("subcategory/editSubcategory", a
 
 // Edit subcategory PUT
 export const editSubcategoryPut = createAsyncThunk("subcategory/editSubcategoryPut", async (data) => {
-    const response = await fetch(`${urlBase}/subcategory/${data.id}/`, {
+    const response = await fetch(`${urlBase}/productsubcategory/${data.id}/`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
@@ -77,7 +77,7 @@ export const editSubcategoryPut = createAsyncThunk("subcategory/editSubcategoryP
 
 // Delete subcategory
 export const deleteSubcategory = createAsyncThunk("subcategory/deleteSubcategory", async (data) => {
-    const response = await fetch(`${urlBase}/subcategory/${data.id}/`, {
+    const response = await fetch(`${urlBase}/productsubcategory/${data.id}/`, {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",

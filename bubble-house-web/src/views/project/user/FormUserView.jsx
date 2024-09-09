@@ -5,7 +5,7 @@ import ErrorMessage from '@/components/ErrorMessage';
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { Tooltip } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { addUser, editUserPut, deleteUser, cleanAlert } from '@/redux/thunks/userThunks';
+import { addUser, editUserwithoutPassword, deleteUser, cleanAlert } from '@/redux/thunks/userThunks';
 import { ToastSuccess, ToastError } from '@/assets/js/toastify.js';
 import { SweetAlertEliminar } from '@/assets/js/sweetAlert.js';
 
@@ -84,13 +84,13 @@ export default function FormUserView({ isVisible, onClose, refreshUsers, selecte
                 username: formData.userName,
                 email: formData.email,
                 rolls: [
-                    formData.rolls
-                ],
-                password: formData.newPassword,
+                    formData.rolls[0],
+                ]
             }
         };
+
         if (selectedUser) {
-            dispatch(editUserPut(userData))
+            dispatch(editUserwithoutPassword(userData))
                 .unwrap()
                 .then(() => {
                     ToastSuccess("Usuario actualizado con éxito");
@@ -100,6 +100,7 @@ export default function FormUserView({ isVisible, onClose, refreshUsers, selecte
                     dispatch(cleanAlert());
                 })
         } else {
+            userData.user.password = formData.newPassword;
             dispatch(addUser(userData))
                 .unwrap()
                 .then(() => {

@@ -8,7 +8,7 @@ import {
   getSessionUser,
   cleanAlert,
   addUser,
-  editUserPut,
+  editUserwithoutPassword,
   getUsers,
   getUser,
   authMe,
@@ -184,15 +184,15 @@ const userSlice = createSlice({
     });
 
     // Editar usuario por put
-    builder.addCase(editUserPut.pending, (state) => {
+    builder.addCase(editUserwithoutPassword.pending, (state) => {
       state.loading = true;
       state.errorRedux = null;
     });
-    builder.addCase(editUserPut.fulfilled, (state, action) => {
+    builder.addCase(editUserwithoutPassword.fulfilled, (state, action) => {
       state.loading = false;
       state.message = "Usuario actualizado con éxito!";
     });
-    builder.addCase(editUserPut.rejected, (state) => {
+    builder.addCase(editUserwithoutPassword.rejected, (state) => {
       state.loading = false;
       state.errorRedux = "Ocurrió un error al actualizar el usuario!";
     });

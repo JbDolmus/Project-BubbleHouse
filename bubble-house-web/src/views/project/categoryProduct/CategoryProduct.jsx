@@ -4,6 +4,7 @@ import NavBarPrincipal from "@/layouts/NavBarPrincipal";
 import FormCategoryProducto from "./FormCategoryProducto";
 import { useDispatch, useSelector } from "react-redux";
 import { getCategories } from "@/redux/thunks/categoryThunks";
+import { ToastError } from "@/assets/js/toastify";
 
 
 export default function CategoryProduct() {
@@ -13,14 +14,14 @@ export default function CategoryProduct() {
     const { token } = useSelector(state => state.user);
     const { categories, errorRedux } = useSelector(state => state.category);
 
-    const loadUsers = () => {
+    const loadCategories = () => {
         if (token) {
-            //dispatch(getCategories(token));
+            dispatch(getCategories(token));
         }
     };
 
     useEffect(() => {
-        loadUsers();
+        loadCategories();
     }, [dispatch, token]);
 
     useEffect(() => {
@@ -57,7 +58,7 @@ export default function CategoryProduct() {
                     </button>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full max-w-4xl">
-                    {categories.length > 0 && categories.map(category => (
+                    {categories && categories.map(category => (
                         <div
                             key={category.id}
                             className="bg-white border border-gray-200 rounded-lg shadow-lg p-4 cursor-pointer"
@@ -71,7 +72,7 @@ export default function CategoryProduct() {
             <FormCategoryProducto
                 isVisible={isModalVisible}
                 onClose={handleCancel}
-                refreshUsers={() => { }}
+                refreshCategories={loadCategories}
                 selectedCategory={selectedCategory}
             />
         </>

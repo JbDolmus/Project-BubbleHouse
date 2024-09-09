@@ -5,7 +5,7 @@ import NavBarPrincipal from '@/layouts/NavBarPrincipal';
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { Tooltip } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { authMe, editUser, cleanAlert } from '@/redux/thunks/userThunks';
+import { authMe, editUser, closeSession, cleanAlert } from '@/redux/thunks/userThunks';
 import { ToastSuccess, ToastError } from '@/assets/js/toastify.js';
 import { useNavigate } from 'react-router-dom';
 
@@ -61,6 +61,8 @@ export default function UserView() {
       usuario: {
         username: formData.userName,
         email: formData.email,
+        current_password: formData.currentPassword,
+        new_password: formData.newPassword,
       }
     };
 
@@ -68,7 +70,10 @@ export default function UserView() {
       .unwrap()
       .then(() => {
         ToastSuccess("Usuario actualizado con éxito");
-        navigate('/orders');
+        dispatch(cleanAlert());
+        dispatch(closeSession());
+        ToastSuccess("Sesión cerrada. Por favor, inicia sesión de nuevo.");
+        navigate('/');
         dispatch(cleanAlert());
       })
   };

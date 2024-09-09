@@ -32,6 +32,7 @@ export default function LoginView() {
 
     if (errorRedux) {
       SweetAlertError(errorRedux);
+      dispatch(cleanAlert());
     }
   }, [errorRedux, message]);
 

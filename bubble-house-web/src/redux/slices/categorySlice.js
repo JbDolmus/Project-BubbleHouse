@@ -12,7 +12,7 @@ const userSlice = createSlice({
     name: "category",
     initialState: {
         category: null,
-        categories: [{id: 1, name:"Lacteos"}],
+        categories: [],
         message: "",
         loading: false,
         errorRedux: null,
@@ -27,7 +27,8 @@ const userSlice = createSlice({
         });
         builder.addCase(getCategories.fulfilled, (state, action) => {
             if (action.payload) {
-                state.categories = action.payload.categorias;
+                state.loading = false;
+                state.categories = action.payload;
             } else {
                 state.errorRedux = "Ocurrió un error al cargar las categorías!";
             }
@@ -49,7 +50,7 @@ const userSlice = createSlice({
                 state.category = action.payload.categoria;
             } else {
                 state.errorRedux = "Ocurrió un error al cargar la categoría!";
-            } 
+            }
             state.loading = false;
         });
         builder.addCase(getCategory.rejected, (state) => {
@@ -64,9 +65,9 @@ const userSlice = createSlice({
             state.message = "";
         });
         builder.addCase(addCategory.fulfilled, (state, action) => {
-            if (action.payload) { // Categoría agregada
-                state.categories = [...state.categories, action.payload.categoria];
-                state.message = action.payload.message;
+            if (action.payload) {
+                state.loading = false;
+                state.message = "Categoría agregada con éxito!";
             } else {
                 state.errorRedux = "Ocurrió un error al agregar la categoría!";
             }
@@ -84,14 +85,9 @@ const userSlice = createSlice({
             state.message = "";
         });
         builder.addCase(editCategory.fulfilled, (state, action) => {
-            if (action.payload) { // Categoría editada
-                state.categories = state.categories.map((category) => {
-                    if (category.id === action.payload.categoria.id) {
-                        return action.payload.categoria;
-                    }
-                    return category;
-                });
-                state.message = action.payload.message;
+            if (action.payload) {
+                state.loading = false;
+                state.message = "Categoría actualizada con éxito!";
             } else {
                 state.errorRedux = "Ocurrió un error al editar la categoría!";
             }
@@ -109,12 +105,12 @@ const userSlice = createSlice({
             state.message = "";
         });
         builder.addCase(deleteCategory.fulfilled, (state, action) => {
-            if (action.payload) { // Categoría eliminada correctamente
-                state.categories = state.categories.filter((category) => category.id !== action.payload.id);
-                state.message = action.payload.message;
-            } else {    // Error al eliminar categoría o categoría no encontrada
+            if (action.payload.success) {
+                state.message = "";
+                state.loading = false;
+            } else {
                 state.errorRedux = "Ocurrió un error al eliminar la categoría!";
-            } 
+            }
             state.loading = false;
         });
         builder.addCase(deleteCategory.rejected, (state) => {
