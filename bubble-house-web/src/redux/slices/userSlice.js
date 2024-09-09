@@ -35,10 +35,11 @@ const userSlice = createSlice({
       state.message = "";
     });
     builder.addCase(loginUser.fulfilled, (state, action) => {
-      if (action.payload) {
-        const data = action.payload;
-        state.token = data.access ? data.access : null;
-        state.refresh = data.refresh ? data.refresh : null;
+      const data = action.payload;
+      if (data.access && data.refresh) {
+        state.token = data.access;
+        state.refresh = data.refresh;
+        state.message = "Inicio de sesión exitoso!";
       } else {
         state.errorRedux = "Ocurrió un error al iniciar sesión.";
       }

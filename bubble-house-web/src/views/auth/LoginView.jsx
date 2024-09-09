@@ -12,21 +12,28 @@ export default function LoginView() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { register, handleSubmit, formState: { errors } } = useForm({ defaultValues: { email: 'jbautista.dormo.corea@gmail.com', password: 'admin123' } });
+  const { register, handleSubmit, formState: { errors } } = useForm({ defaultValues: { email: 'jbautista.dormo.corea@gmail.com', password: 'jbdc1234' } });
   const [showPassword, setShowPassword] = useState(false);
 
-  const { errorRedux, loading } = useSelector((state) => state.user);
+  const { errorRedux, loading, message } = useSelector((state) => state.user);
 
-  const handleLogin = async (formData) => {
-    try {
-      await dispatch(loginUser(formData)).unwrap();
+  const handleLogin = (formData) => {
+
+    dispatch(loginUser(formData));
+
+  };
+
+  useEffect(() => {
+    if (message === "Inicio de sesión exitoso!") {
       navigate('/orders');
       SweetAlertSuccess("Inicio de sesión exitosa");
       dispatch(cleanAlert());
-    } catch (error) {
-      SweetAlertError("Error al iniciar sesión");
     }
-  };
+
+    if (errorRedux) {
+      SweetAlertError(errorRedux);
+    }
+  }, [errorRedux, message]);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -86,7 +93,7 @@ export default function LoginView() {
           className={`bg-fuchsia-600 hover:bg-fuchsia-700 w-full p-3 text-white font-black text-xl cursor-pointer rounded-md ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
           disabled={loading}
         />
-        
+
       </form>
 
       <nav className="mt-10 flex flex-col space-y-4">
