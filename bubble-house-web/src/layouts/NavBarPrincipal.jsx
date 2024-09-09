@@ -13,7 +13,7 @@ import Tooltip from '@mui/material/Tooltip';
 import { useDispatch } from 'react-redux';
 import { SweetAlertQuestion } from '@/assets/js/sweetAlert.js';
 import { closeSession, cleanAlert } from '@/redux/thunks/userThunks';
-import { ToastSuccess, ToastError } from '@/assets/js/toastify.js';
+import { SweetAlertSuccess } from '../assets/js/sweetAlert';
 
 export default function NavBarPrincipal({ title }) {
   const [selectedIcon,] = useState(title);
@@ -38,7 +38,7 @@ export default function NavBarPrincipal({ title }) {
         dispatch(closeSession())
           .then(() => {
             cleanAlert();
-            ToastSuccess("Has cerrado sesión correctamente.");
+            SweetAlertSuccess("Has cerrado sesión correctamente.");
             navigate("/");
           })
       }

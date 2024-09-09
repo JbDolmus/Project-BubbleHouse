@@ -3,6 +3,7 @@ import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import userSlice from "./slices/userSlice";
 import categorySlice from "./slices/categorySlice";
+import rolSlice from "./slices/rolSlice";
 
 const userPersistConfig = {
   key: "user",
@@ -14,6 +15,7 @@ const userPersistConfig = {
 const rootReducer = combineReducers({
   user: persistReducer(userPersistConfig, userSlice),
   category: categorySlice,
+  rol: rolSlice,
 });
 
 export default rootReducer;

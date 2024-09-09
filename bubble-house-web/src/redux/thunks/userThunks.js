@@ -40,7 +40,7 @@ export const refreshToken = createAsyncThunk("user/refreshToken", async (data) =
 
 // Add user
 export const addUser = createAsyncThunk("user/addUser", async (data) => {
-  const response = await fetch(`${urlBase}/user/`, {
+  const response = await fetch(`${urlBase}/auth/register`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

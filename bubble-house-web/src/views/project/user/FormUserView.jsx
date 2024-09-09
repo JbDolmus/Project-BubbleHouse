@@ -9,9 +9,10 @@ import { addUser, editUserPut, deleteUser, cleanAlert } from '@/redux/thunks/use
 import { ToastSuccess, ToastError } from '@/assets/js/toastify.js';
 import { SweetAlertEliminar } from '@/assets/js/sweetAlert.js';
 
-export default function FormUserView({ isVisible, onClose, refreshUsers, selectedUser }) {
+export default function FormUserView({ isVisible, onClose, refreshUsers, selectedUser, rolls }) {
     const dispatch = useDispatch();
     const { token, users } = useSelector(state => state.user);
+    
 
     const {
         register,
@@ -24,6 +25,7 @@ export default function FormUserView({ isVisible, onClose, refreshUsers, selecte
         defaultValues: {
             userName: '',
             email: '',
+            rolls: [],
             newPassword: '',
             repeatPassword: '',
         }
@@ -40,6 +42,7 @@ export default function FormUserView({ isVisible, onClose, refreshUsers, selecte
         if (selectedUser) {
             setValue('userName', selectedUser.username);
             setValue('email', selectedUser.email);
+            setValue('rolls', selectedUser.rolls_details.map(roll => roll.id));
             setValue('newPassword', '########');
             setValue('repeatPassword', '########');
         } else {
@@ -73,14 +76,17 @@ export default function FormUserView({ isVisible, onClose, refreshUsers, selecte
         }
 
         if (isDuplicateUser(formData)) return;
-
+        
         const userData = {
             id: selectedUser?.id,
             token,
             user: {
                 username: formData.userName,
                 email: formData.email,
-                rolls: [],
+                rolls: [
+                    formData.rolls
+                ],
+                password: formData.newPassword,
             }
         };
         if (selectedUser) {
@@ -181,6 +187,23 @@ export default function FormUserView({ isVisible, onClose, refreshUsers, selecte
                         })}
                     />
                     {errors.email && <ErrorMessage>{errors.email.message}</ErrorMessage>}
+                </div>
+
+                {/* Rol */}
+                <div className="flex flex-col gap-2">
+                    <label className="font-medium" htmlFor="rolls">Rol</label>
+                    <select
+                        id="rolls"
+                        className="w-full p-3 border-gray-300 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        {...register("rolls", { required: "El rol es obligatorio" })}
+                    >
+                        <option value="">Selecciona un rol</option>
+                        {rolls && rolls.map((roll) => (
+                            <option key={roll.id} value={roll.id}>{roll.name}</option>
+                        ))}
+                        
+                    </select>
+                    {errors.rolls && <ErrorMessage>{errors.rolls.message}</ErrorMessage>}
                 </div>
 
                 {/* Nueva Contraseña */}

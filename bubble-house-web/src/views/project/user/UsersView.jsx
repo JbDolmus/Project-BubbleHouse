@@ -5,22 +5,26 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getUsers } from '@/redux/thunks/userThunks';
 import { ToastError } from '@/assets/js/toastify.js';
 import FormUserView from './FormUserView';
+import { getRolls, cleanAlertRoll } from '@/redux/thunks/rolThunks';
 
 export default function UsersView() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const dispatch = useDispatch();
   const { users, token, errorRedux } = useSelector(state => state.user);
+  const { rolls } = useSelector(state => state.rol);
 
   const loadUsers = () => {
 
     if (token) {
       dispatch(getUsers(token));
+      dispatch(getRolls(token));
     }
+
   };
 
   useEffect(() => {
-    loadUsers();  
+    loadUsers();
   }, [dispatch, token]);
 
   useEffect(() => {
@@ -28,7 +32,7 @@ export default function UsersView() {
       ToastError(errorRedux);
     }
   }, [errorRedux]);
-  
+
 
   const showModal = (user = null) => {
     setSelectedUser(user);
@@ -64,6 +68,12 @@ export default function UsersView() {
             >
               <h2 className="text-xl font-semibold mb-2">{user.username}</h2>
               <p className="text-gray-600">{user.email}</p>
+              {user.rolls_details && user.rolls_details.map(roll => (
+                <div key={roll.id} className='flex flex-row gap-1'>
+                  <span className='text-gray-950'>Rol:</span>
+                  <p className="text-gray-600" >{roll.name}</p>
+                </div>
+              ))}
             </div>
           ))}
         </div>
@@ -72,6 +82,7 @@ export default function UsersView() {
           onClose={handleCancel}
           refreshUsers={loadUsers}
           selectedUser={selectedUser}
+          rolls={rolls}
         />
       </div>
     </>
