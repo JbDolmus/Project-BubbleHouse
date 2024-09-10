@@ -110,10 +110,11 @@ export const editUser = createAsyncThunk("user/editUser", async (data) => {
   return jsonResponse;
 });
 
-// Edit user PUT
-export const editUserPut = createAsyncThunk("user/editUserPut", async (data) => {
+// Edit user 
+export const editUserwithoutPassword = createAsyncThunk("user/editUserwithoutPassword", async (data) => {
+  console.log(data.user);
   const response = await fetch(`${urlBase}/user/${data.id}/`, {
-    method: "PUT",
+    method: "PATCH",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${data.token}`,
@@ -121,6 +122,7 @@ export const editUserPut = createAsyncThunk("user/editUserPut", async (data) => 
     },
     body: JSON.stringify(data.user),
   });
+  console.log(response);
   const jsonResponse = await response.json();
   return jsonResponse;
 });

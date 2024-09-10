@@ -2,13 +2,15 @@ import { Button, Modal } from 'antd';
 import { useForm } from 'react-hook-form';
 import ErrorMessage from '@/components/ErrorMessage';
 import { useDispatch, useSelector } from 'react-redux';
-import { cleanAlert, addCategory, editCategory } from '@/redux/thunks/categoryThunks';
+import { cleanAlert, addCategory, editCategory, deleteCategory } from '@/redux/thunks/categoryThunks';
 import { useEffect } from 'react';
+import { ToastError, ToastSuccess } from '@/assets/js/toastify';
+import { SweetAlertEliminar } from '@/assets/js/sweetAlert';
 
 export default function FormCategoryProducto({ isVisible, onClose, refreshCategories, selectedCategory }) {
 
     const { token } = useSelector(state => state.user);
-    const { categories, errorRedux } = useSelector(state => state.category);
+    const { categories } = useSelector(state => state.category);
     const dispatch = useDispatch();
 
     const {
@@ -32,7 +34,7 @@ export default function FormCategoryProducto({ isVisible, onClose, refreshCatego
     }, [selectedCategory, setValue, reset]);
 
     const isDuplicateCategory = (formData) => {
-        const isDuplicateName = users.results.some(user => user.email === formData.email && user.id !== selectedUser?.id);
+        const isDuplicateName = categories.some(category => category.name === formData.name && category.id !== selectedCategory?.id);
         if (isDuplicateName) {
             ToastError("Esa categoría ya existe.");
             return true;
@@ -41,12 +43,65 @@ export default function FormCategoryProducto({ isVisible, onClose, refreshCatego
         return false;
     };
 
-    const handleAddOrEditUser = (formData) => {
+    const handleAddOrEditCategory = (formData) => {
+        if (!token) {
+            ToastError("Token no disponible");
+            return;
+        }
 
+        if (isDuplicateCategory(formData)) return;
+
+        const categoryData = {
+            id: selectedCategory?.id,
+            token,
+            category: {
+                name: formData.name,
+            }
+        };
+        
+        if (selectedCategory) {
+            dispatch(editCategory(categoryData))
+                .unwrap()
+                .then(() => {
+                    ToastSuccess("Categoría actualizada con éxito");
+                    onClose();
+                    reset();
+                    refreshCategories();
+                    dispatch(cleanAlert());
+                })
+        } else {
+            dispatch(addCategory(categoryData))
+                .unwrap()
+                .then(() => {
+
+                    ToastSuccess("Categoría agregada con éxito");
+                    onClose();
+                    reset();
+                    refreshCategories();
+                    dispatch(cleanAlert());
+                })
+        }
     }
 
-    const handleDeleteUser = () => {
+    const handleDeleteCategory = () => {
+        if (!token) {
+            ToastError("Token no disponible");
+            return;
+        }
 
+        SweetAlertEliminar("¿Estás seguro de que deseas eliminar esta categoría?", () => {
+            dispatch(deleteCategory({ id: selectedCategory.id, token }))
+                .unwrap()
+                .then(() => {
+                    ToastSuccess("Categoría eliminada con éxito");
+                    setTimeout(() => {
+                        onClose();
+                        reset();
+                        refreshCategories();
+                        dispatch(cleanAlert());
+                    }, 0);
+                })
+        });
     }
 
     return (
@@ -61,7 +116,7 @@ export default function FormCategoryProducto({ isVisible, onClose, refreshCatego
             centered
             width={500}
         >
-            <form onSubmit={handleSubmit(handleAddOrEditUser)} className="space-y-4">
+            <form onSubmit={handleSubmit(handleAddOrEditCategory)} className="space-y-4">
                 {/* Nombre */}
                 <div className="flex flex-col gap-2">
                     <label className="font-medium" htmlFor="name">Nombre de Categoría</label>
@@ -90,7 +145,7 @@ export default function FormCategoryProducto({ isVisible, onClose, refreshCatego
                             type='button'
                             className="w-full bg-red-500 text-white hover:bg-red-600 hover:text-white rounded-md"
                             style={{ padding: '0.32rem 0' }}
-                            onClick={handleDeleteUser}
+                            onClick={handleDeleteCategory}
                         >
                             Eliminar Categoría
                         </button>
