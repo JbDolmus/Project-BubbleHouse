@@ -32,7 +32,7 @@ export const getSubcategories = createAsyncThunk("subcategory/getSubcategories",
 });
 
 // Get an subcategory
-export const getsubCategory = createAsyncThunk("subcategory/getSubcategory", async (data) => {
+export const getSubcategory = createAsyncThunk("subcategory/getSubcategory", async (data) => {
     const response = await fetch(`${urlBase}/productsubcategory/${data.id}`, {
         method: "GET",
         headers: {
@@ -53,7 +53,7 @@ export const editSubcategory = createAsyncThunk("subcategory/editSubcategory", a
             Authorization: `Bearer ${data.token}`,
             Accept: "application/json",
         },
-        body: JSON.stringify(data.usuario),
+        body: JSON.stringify(data.subcategory),
     });
     const jsonResponse = await response.json();
     return jsonResponse;
@@ -94,6 +94,6 @@ export const deleteSubcategory = createAsyncThunk("subcategory/deleteSubcategory
     }
 });
 
-export const cleanAlert = createAsyncThunk("subcategory/cleanAlert", () => {
+export const cleanAlertSubcategory = createAsyncThunk("subcategory/cleanAlertSubcategory", () => {
     return {};
   });

@@ -35,13 +35,14 @@ const userSlice = createSlice({
       state.message = "";
     });
     builder.addCase(loginUser.fulfilled, (state, action) => {
+      console.log(action.payload);
       const data = action.payload;
       if (data.access && data.refresh) {
         state.token = data.access;
         state.refresh = data.refresh;
         state.message = "Inicio de sesión exitoso!";
       } else {
-        state.errorRedux = "Ocurrió un error al iniciar sesión.";
+        state.errorRedux = "Credenciales incorrectas";
       }
       state.loading = false;
     });
@@ -173,12 +174,12 @@ const userSlice = createSlice({
       state.errorRedux = null;
     });
     builder.addCase(addUser.fulfilled, (state, action) => {
-      
+
       state.loading = false;
       state.message = "Usuario agregado con éxito!";
     });
     builder.addCase(addUser.rejected, (state) => {
-      
+
       state.loading = false;
       state.errorRedux = "Ocurrió un error al agregar el usuario!";
     });
@@ -231,14 +232,14 @@ const userSlice = createSlice({
       state.errorRedux = null;
     });
     builder.addCase(authMe.fulfilled, (state, action) => {
-      if(action.payload.state){
+      if (action.payload.state) {
         state.loading = false;
-      state.user = action.payload.data;
-      }else{
+        state.user = action.payload.data;
+      } else {
         state.loading = false;
         state.errorRedux = action.payload.message;
       }
-      
+
     });
     builder.addCase(authMe.rejected, (state) => {
       state.loading = false;

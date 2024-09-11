@@ -60,22 +60,26 @@ export default function UsersView() {
           </button>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full max-w-4xl">
-          {users.count > 0 && users.results.map(user => (
-            <div
-              key={user.id}
-              className="bg-white border border-gray-200 rounded-lg shadow-lg p-4 cursor-pointer"
-              onClick={() => showModal(user)}
-            >
-              <h2 className="text-xl font-semibold mb-2">{user.username}</h2>
-              <p className="text-gray-600">{user.email}</p>
-              {user.rolls_details && user.rolls_details.map(roll => (
-                <div key={roll.id} className='flex flex-row gap-1'>
-                  <span className='text-gray-950'>Rol:</span>
-                  <p className="text-gray-600" >{roll.name}</p>
-                </div>
-              ))}
-            </div>
-          ))}
+          {users.count > 0 ? (
+            users.results.map(user => (
+              <div
+                key={user.id}
+                className="bg-white border border-gray-200 rounded-lg shadow-lg p-4 cursor-pointer"
+                onClick={() => showModal(user)}
+              >
+                <h2 className="text-xl font-semibold mb-2">{user.username}</h2>
+                <p className="text-gray-600">{user.email}</p>
+                {user.rolls_details && user.rolls_details.map(roll => (
+                  <div key={roll.id} className='flex flex-row gap-1'>
+                    <span className='text-gray-950'>Rol:</span>
+                    <p className="text-gray-600">{roll.name}</p>
+                  </div>
+                ))}
+              </div>
+            ))
+          ) : (
+            <p className="text-white text-xl">No hay usuarios por mostrar</p>
+          )}
         </div>
         <FormUserView
           isVisible={isModalVisible}

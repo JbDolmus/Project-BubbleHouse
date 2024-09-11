@@ -5,7 +5,7 @@ import {
     addCategory,
     editCategory,
     deleteCategory,
-    cleanAlert
+    cleanAlertCategory
 } from "../thunks/categoryThunks.js";
 
 const userSlice = createSlice({
@@ -106,7 +106,7 @@ const userSlice = createSlice({
         });
         builder.addCase(deleteCategory.fulfilled, (state, action) => {
             if (action.payload.success) {
-                state.message = "";
+                state.message = "Categoría eliminada con éxito!";
                 state.loading = false;
             } else {
                 state.errorRedux = "Ocurrió un error al eliminar la categoría!";
@@ -119,17 +119,17 @@ const userSlice = createSlice({
         });
 
         // Limpiar alertas
-        builder.addCase(cleanAlert.pending, (state) => {
+        builder.addCase(cleanAlertCategory.pending, (state) => {
             state.loading = false;
             state.errorRedux = null;
             state.message = null;
         });
-        builder.addCase(cleanAlert.fulfilled, (state) => {
+        builder.addCase(cleanAlertCategory.fulfilled, (state) => {
             state.loading = false;
             state.errorRedux = null;
             state.message = "";
         });
-        builder.addCase(cleanAlert.rejected, (state) => {
+        builder.addCase(cleanAlertCategory.rejected, (state) => {
             state.loading = false;
             state.errorRedux = null;
             state.message = "";

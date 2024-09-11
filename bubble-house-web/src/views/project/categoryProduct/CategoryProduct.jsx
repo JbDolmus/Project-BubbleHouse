@@ -58,15 +58,19 @@ export default function CategoryProduct() {
                     </button>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full max-w-4xl">
-                    {categories && categories.map(category => (
-                        <div
-                            key={category.id}
-                            className="bg-white border border-gray-200 rounded-lg shadow-lg p-4 cursor-pointer"
-                            onClick={() => showModal(category)}
-                        >
-                            <h2 className="text-xl font-semibold mb-2">{category.name}</h2>
-                        </div>
-                    ))}
+                    {categories && categories.length > 0 ? (
+                        categories.map(category => (
+                            <div
+                                key={category.id}
+                                className="bg-white border border-gray-200 rounded-lg shadow-lg p-4 cursor-pointer"
+                                onClick={() => showModal(category)}
+                            >
+                                <h2 className="text-xl font-semibold mb-2">{category.name}</h2>
+                            </div>
+                        ))
+                    ) : (
+                        <p className="text-white text-xl">No hay categorías por mostrar</p>
+                    )}
                 </div>
             </div>
             <FormCategoryProducto
