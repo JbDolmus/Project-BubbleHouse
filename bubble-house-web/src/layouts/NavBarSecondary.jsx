@@ -25,7 +25,7 @@ export default function NavBarSecondary({ title }) {
         {icons.map(({ Component, title, path }, index) => (
           <div
             key={index}
-            className="flex-shrink-0 flex justify-center items-center rounded-lg p-2 md:p-4 hover:bg-gray-300 cursor-pointer transition-colors duration-200"
+            className="flex-shrink-0 flex flex-col items-center rounded-lg p-2 md:p-4 hover:bg-gray-300 cursor-pointer transition-colors duration-200"
             onClick={() => handleIconClick(title)}
           >
             <Tooltip title={title}>
@@ -36,6 +36,9 @@ export default function NavBarSecondary({ title }) {
                 />
               </Link>
             </Tooltip>
+            {selectedIcon === title && (
+              <div className="w-full border-b-4 border-blue-400 mt-2 -mb-4"></div>
+            )}
           </div>
         ))}
       </div>

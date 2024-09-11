@@ -66,8 +66,7 @@ export default function NavBarPrincipal({ title }) {
         {icons.map(({ Component, title, path, disabled }, index) => (
           <div
             key={index}
-            className={`flex-shrink-0 flex justify-center items-center rounded-lg p-2 md:p-4 hover:bg-gray-300 cursor-pointer transition-colors duration-200 ${disabled ? 'opacity-50 cursor-not-allowed' : ''
-              }`}
+            className={`flex-shrink-0 flex flex-col items-center rounded-lg p-2 md:p-4 cursor-pointer transition-colors duration-200 ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-300'}`}
             onClick={() => handleIconClick(title, path, disabled)}
           >
             <Tooltip title={title}>
@@ -78,6 +77,9 @@ export default function NavBarPrincipal({ title }) {
                 />
               </Link>
             </Tooltip>
+            {selectedIcon === title && (
+              <div className="w-full border-b-4 border-blue-400 mt-2 -mb-4"></div>
+            )}
           </div>
         ))}
       </div>

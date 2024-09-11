@@ -57,7 +57,7 @@ export default function UsersView() {
   return (
     <>
       <NavBarPrincipal title={"Usuarios"} />
-      <div className="flex flex-col items-center min-h-screen p-6">
+      <div className="flex flex-col items-center min-h-screen min-w-full p-6">
         <h1 className="text-4xl font-bold text-white mb-6">Listado de Usuarios</h1>
         <div className="flex flex-col items-center gap-3 mb-4 md:flex-row md:justify-start w-full max-w-4xl">
           <button
@@ -69,7 +69,7 @@ export default function UsersView() {
             Nuevo Usuario
           </button>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full max-w-4xl">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 w-full max-w-4xl">
           {users.length > 0 ? (
             users.map(user => (
               <div

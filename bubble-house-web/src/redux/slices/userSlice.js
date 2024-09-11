@@ -77,7 +77,7 @@ const userSlice = createSlice({
       state.message = "";
     });
     builder.addCase(editUser.fulfilled, (state, action) => {
-      if (action.payload) {
+      if (action.payload.email && action.payload.username) {
         state.loading = false;
         state.message = "Actualización exitosa";
       } else {
