@@ -5,8 +5,8 @@ import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { useState, useEffect } from "react";
 import { Tooltip } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginUser, cleanAlert } from '../../redux/thunks/userThunks';
-import { SweetAlertError, SweetAlertSuccess } from "../../assets/js/sweetAlert";
+import { loginUser, cleanAlert, authMe } from '@/redux/thunks/userThunks';
+import { SweetAlertError, SweetAlertSuccess } from "@/assets/js/sweetAlert";
 
 export default function LoginView() {
   const dispatch = useDispatch();
@@ -15,7 +15,7 @@ export default function LoginView() {
   const { register, handleSubmit, formState: { errors } } = useForm({ defaultValues: { email: 'jbautista.dormo.corea@gmail.com', password: 'jbdc1234' } });
   const [showPassword, setShowPassword] = useState(false);
 
-  const { errorRedux, loading, message } = useSelector((state) => state.user);
+  const { errorRedux, loading, message, token } = useSelector((state) => state.user);
 
   const handleLogin = (formData) => {
 
@@ -24,9 +24,10 @@ export default function LoginView() {
   };
 
   useEffect(() => {
-    if (message === "Inicio de sesión exitoso!") {
+    if (message === "Inicio de sesión exitoso!" && token) {
       navigate('/orders');
       SweetAlertSuccess("Inicio de sesión exitosa");
+      dispatch(authMe(token));
       dispatch(cleanAlert());
     }
 
@@ -34,7 +35,7 @@ export default function LoginView() {
       SweetAlertError(errorRedux);
       dispatch(cleanAlert());
     }
-  }, [errorRedux, message]);
+  }, [errorRedux, message, navigate, dispatch, token]);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);

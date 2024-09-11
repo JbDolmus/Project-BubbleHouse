@@ -33,11 +33,11 @@ export default function UserView() {
   const dispatch = useDispatch();
   const { token, user } = useSelector(state => state.user);
 
-  useEffect(() => {
-    if (token) {
-      dispatch(authMe(token));
-    }
-  }, [dispatch, token]);
+  // useEffect(() => {
+  //   if (token) {
+  //     dispatch(authMe(token));
+  //   }
+  // }, [dispatch, token]);
 
   useEffect(() => {
     if (user) {
@@ -72,9 +72,11 @@ export default function UserView() {
         ToastSuccess("Usuario actualizado con éxito");
         dispatch(cleanAlert());
         dispatch(closeSession());
-        ToastSuccess("Sesión cerrada. Por favor, inicia sesión de nuevo.");
-        navigate('/');
-        dispatch(cleanAlert());
+        setTimeout(() => {
+          ToastSuccess("Sesión cerrada. Por favor, inicia sesión de nuevo.");
+          navigate('/');
+        }, 3000);
+
       })
   };
 

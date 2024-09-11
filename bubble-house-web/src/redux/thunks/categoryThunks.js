@@ -94,6 +94,6 @@ export const deleteCategory = createAsyncThunk("category/deleteCategory", async 
     }
 });
 
-export const cleanAlert = createAsyncThunk("category/cleanAlert", () => {
+export const cleanAlertCategory = createAsyncThunk("category/cleanAlertCategory", () => {
     return {};
   });

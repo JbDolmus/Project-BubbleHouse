@@ -2,7 +2,7 @@ import { Button, Modal } from 'antd';
 import { useForm } from 'react-hook-form';
 import ErrorMessage from '@/components/ErrorMessage';
 import { useDispatch, useSelector } from 'react-redux';
-import { cleanAlert, addCategory, editCategory, deleteCategory } from '@/redux/thunks/categoryThunks';
+import { cleanAlertCategory, addCategory, editCategory, deleteCategory } from '@/redux/thunks/categoryThunks';
 import { useEffect } from 'react';
 import { ToastError, ToastSuccess } from '@/assets/js/toastify';
 import { SweetAlertEliminar } from '@/assets/js/sweetAlert';
@@ -58,7 +58,7 @@ export default function FormCategoryProducto({ isVisible, onClose, refreshCatego
                 name: formData.name,
             }
         };
-        
+
         if (selectedCategory) {
             dispatch(editCategory(categoryData))
                 .unwrap()
@@ -67,7 +67,7 @@ export default function FormCategoryProducto({ isVisible, onClose, refreshCatego
                     onClose();
                     reset();
                     refreshCategories();
-                    dispatch(cleanAlert());
+                    dispatch(cleanAlertCategory());
                 })
         } else {
             dispatch(addCategory(categoryData))
@@ -78,7 +78,7 @@ export default function FormCategoryProducto({ isVisible, onClose, refreshCatego
                     onClose();
                     reset();
                     refreshCategories();
-                    dispatch(cleanAlert());
+                    dispatch(cleanAlertCategory());
                 })
         }
     }
@@ -98,7 +98,7 @@ export default function FormCategoryProducto({ isVisible, onClose, refreshCatego
                         onClose();
                         reset();
                         refreshCategories();
-                        dispatch(cleanAlert());
+                        dispatch(cleanAlertCategory());
                     }, 0);
                 })
         });
@@ -135,19 +135,19 @@ export default function FormCategoryProducto({ isVisible, onClose, refreshCatego
                     />
                     {errors.name && <ErrorMessage>{errors.name.message}</ErrorMessage>}
                 </div>
-                <div className='flex flex-row gap-8'>
-                    <Button type="primary" htmlType="submit" className="w-full">
-                        {selectedCategory ? "Actualizar Categoría" : "Agregar Categoría"}
+                
+                {/* Botones */}
+                <div className={`flex justify-center items-center gap-4 ${selectedCategory ? 'flex-row' : 'flex-col'}`}>
+                    <Button type="primary" htmlType="submit" className="w-40">
+                        {selectedCategory ? "Actualizar" : "Agregar"}
                     </Button>
-
                     {selectedCategory && (
                         <button
                             type='button'
-                            className="w-full bg-red-500 text-white hover:bg-red-600 hover:text-white rounded-md"
-                            style={{ padding: '0.32rem 0' }}
+                            className="w-40 bg-red-500 text-white hover:bg-red-600 rounded-md px-4 py-1.5"
                             onClick={handleDeleteCategory}
                         >
-                            Eliminar Categoría
+                            Eliminar
                         </button>
                     )}
                 </div>

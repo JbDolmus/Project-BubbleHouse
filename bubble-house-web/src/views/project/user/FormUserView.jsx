@@ -12,7 +12,7 @@ import { SweetAlertEliminar } from '@/assets/js/sweetAlert.js';
 export default function FormUserView({ isVisible, onClose, refreshUsers, selectedUser, rolls }) {
     const dispatch = useDispatch();
     const { token, users } = useSelector(state => state.user);
-    
+
 
     const {
         register,
@@ -76,7 +76,7 @@ export default function FormUserView({ isVisible, onClose, refreshUsers, selecte
         }
 
         if (isDuplicateUser(formData)) return;
-        
+
         const userData = {
             id: selectedUser?.id,
             token,
@@ -202,7 +202,7 @@ export default function FormUserView({ isVisible, onClose, refreshUsers, selecte
                         {rolls && rolls.map((roll) => (
                             <option key={roll.id} value={roll.id}>{roll.name}</option>
                         ))}
-                        
+
                     </select>
                     {errors.rolls && <ErrorMessage>{errors.rolls.message}</ErrorMessage>}
                 </div>
@@ -259,21 +259,22 @@ export default function FormUserView({ isVisible, onClose, refreshUsers, selecte
                     {errors.repeatPassword && <ErrorMessage>{errors.repeatPassword.message}</ErrorMessage>}
                 </div>
 
+                {/* Botones */}
+                <div className={`flex justify-center items-center gap-4 mx-7 ${selectedUser ? 'flex-row' : 'flex-col'}`}>
+                    <Button type="primary" htmlType="submit" className="w-40">
+                        {selectedUser ? "Actualizar" : "Agregar"}
+                    </Button>
+                    {selectedUser && (
+                        <button
+                            type='button'
+                            className="w-40 bg-red-500 text-white hover:bg-red-600 rounded-md px-4 py-1.5"
+                            onClick={handleDeleteUser}
+                        >
+                            Eliminar
+                        </button>
+                    )}
+                </div>
 
-                <Button type="primary" htmlType="submit" className="w-full">
-                    {selectedUser ? "Actualizar Usuario" : "Agregar Usuario"}
-                </Button>
-
-                {selectedUser && (
-                    <button
-                        type='button'
-                        className="w-full bg-red-500 text-white hover:bg-red-600 hover:text-white rounded-md"
-                        style={{ padding: '0.32rem 0' }}
-                        onClick={handleDeleteUser}
-                    >
-                        Eliminar Usuario
-                    </button>
-                )}
             </form>
         </Modal>
     );
