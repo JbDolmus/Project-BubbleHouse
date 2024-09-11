@@ -147,7 +147,7 @@ export default function FormSubcategoryProduct({ isVisible, onClose, refreshSubc
           <select
             id="category"
             className="w-full p-3 border-gray-300 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-            {...register("category", { required: "El rol es obligatorio" })}
+            {...register("category", { required: "La categoría es obligatoria" })}
           >
             <option value="">Selecciona una categoría</option>
             {categories && categories.length > 0 ? (

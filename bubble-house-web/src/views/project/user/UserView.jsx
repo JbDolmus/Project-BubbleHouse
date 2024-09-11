@@ -5,7 +5,7 @@ import NavBarPrincipal from '@/layouts/NavBarPrincipal';
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { Tooltip } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { authMe, editUser, closeSession, cleanAlert } from '@/redux/thunks/userThunks';
+import { editUser, closeSession, cleanAlert, authMe } from '@/redux/thunks/userThunks';
 import { ToastSuccess, ToastError } from '@/assets/js/toastify.js';
 import { useNavigate } from 'react-router-dom';
 
@@ -31,13 +31,13 @@ export default function UserView() {
   const newPassword = watch('newPassword');
 
   const dispatch = useDispatch();
-  const { token, user } = useSelector(state => state.user);
+  const { token, user, errorRedux, message } = useSelector(state => state.user);
 
-  // useEffect(() => {
-  //   if (token) {
-  //     dispatch(authMe(token));
-  //   }
-  // }, [dispatch, token]);
+  useEffect(() => {
+    if (token) {
+      dispatch(authMe(token));
+    }
+  }, [dispatch, token]);
 
   useEffect(() => {
     if (user) {
@@ -47,6 +47,22 @@ export default function UserView() {
       });
     }
   }, [user, reset]);
+
+  useEffect(() => {
+    if (message === "Actualización exitosa" && token) {
+      ToastSuccess("Usuario actualizado con éxito");
+      dispatch(cleanAlert());
+      dispatch(closeSession());
+      setTimeout(() => {
+        ToastSuccess("Sesión cerrada. Por favor, inicia sesión de nuevo.");
+        navigate('/');
+      }, 3000);
+    }
+    if (errorRedux) {
+      ToastError(errorRedux);
+      dispatch(cleanAlert());
+    }
+  }, [errorRedux, message, navigate, dispatch, token]);
 
 
   const handleUserUpdate = (formData) => {
@@ -66,18 +82,8 @@ export default function UserView() {
       }
     };
 
-    dispatch(editUser(userData))
-      .unwrap()
-      .then(() => {
-        ToastSuccess("Usuario actualizado con éxito");
-        dispatch(cleanAlert());
-        dispatch(closeSession());
-        setTimeout(() => {
-          ToastSuccess("Sesión cerrada. Por favor, inicia sesión de nuevo.");
-          navigate('/');
-        }, 3000);
+    dispatch(editUser(userData));
 
-      })
   };
 
   const togglePasswordVisibility = (field) => {
@@ -125,6 +131,7 @@ export default function UserView() {
                   required: "El correo es obligatorio",
                   pattern: { value: /\S+@\S+\.\S+/, message: "Correo no válido" }
                 })}
+                readOnly
               />
               {errors.email && <ErrorMessage>{errors.email.message}</ErrorMessage>}
             </div>
@@ -139,7 +146,7 @@ export default function UserView() {
                 className="w-full p-3 pr-10 border-gray-300 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                 {...register("currentPassword", { required: "La contraseña actual es obligatoria" })}
               />
-              <Tooltip title={showPassword.currentPassword ? "Ocultar" : "Mostrar"}>
+              <Tooltip title={showPassword.currentPassword ? "Ocultar" : "Mostrar"} placement='top'>
                 <button
                   type="button"
                   className="absolute right-3 flex items-center justify-center"
@@ -165,7 +172,7 @@ export default function UserView() {
                   minLength: { value: 8, message: "Debe tener al menos 8 caracteres" }
                 })}
               />
-              <Tooltip title={showPassword.newPassword ? "Ocultar" : "Mostrar"}>
+              <Tooltip title={showPassword.newPassword ? "Ocultar" : "Mostrar"} placement='top'>
                 <button
                   type="button"
                   className="absolute right-3 flex items-center justify-center"
@@ -191,7 +198,7 @@ export default function UserView() {
                   validate: value => value === newPassword || 'Las contraseñas no coinciden'
                 })}
               />
-              <Tooltip title={showPassword.repeatPassword ? "Ocultar" : "Mostrar"}>
+              <Tooltip title={showPassword.repeatPassword ? "Ocultar" : "Mostrar"} placement='top'>
                 <button
                   type="button"
                   className="absolute right-3 flex items-center justify-center"

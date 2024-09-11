@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { FaPlus } from "react-icons/fa6";
 import NavBarPrincipal from '@/layouts/NavBarPrincipal';
 import { useDispatch, useSelector } from 'react-redux';
-import { getUsers } from '@/redux/thunks/userThunks';
+import { getUsers,cleanAlert } from '@/redux/thunks/userThunks';
 import { ToastError } from '@/assets/js/toastify.js';
 import FormUserView from './FormUserView';
 import { getRolls, cleanAlertRoll } from '@/redux/thunks/rolThunks';
@@ -11,8 +11,8 @@ export default function UsersView() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const dispatch = useDispatch();
-  const { users, token, errorRedux } = useSelector(state => state.user);
-  const { rolls } = useSelector(state => state.rol);
+  const { users, token, errorRedux, message } = useSelector(state => state.user);
+  const { rolls, messageRol } = useSelector(state => state.rol);
 
   const loadUsers = () => {
 
@@ -28,10 +28,20 @@ export default function UsersView() {
   }, [dispatch, token]);
 
   useEffect(() => {
+
+    if(message === "Usuarios obtenidos exitosamente!"){
+      dispatch(cleanAlert());
+    }
+
+    if(messageRol === "Roles obtenidos exitosamente!"){
+      dispatch(cleanAlertRoll());
+    }
+
     if (errorRedux) {
       ToastError(errorRedux);
+      dispatch(cleanAlert());
     }
-  }, [errorRedux]);
+  }, [errorRedux, message, messageRol, dispatch]);
 
 
   const showModal = (user = null) => {
@@ -47,7 +57,7 @@ export default function UsersView() {
   return (
     <>
       <NavBarPrincipal title={"Usuarios"} />
-      <div className="flex flex-col items-center min-h-screen p-6">
+      <div className="flex flex-col items-center min-h-screen min-w-full p-6">
         <h1 className="text-4xl font-bold text-white mb-6">Listado de Usuarios</h1>
         <div className="flex flex-col items-center gap-3 mb-4 md:flex-row md:justify-start w-full max-w-4xl">
           <button
@@ -59,9 +69,9 @@ export default function UsersView() {
             Nuevo Usuario
           </button>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full max-w-4xl">
-          {users.count > 0 ? (
-            users.results.map(user => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 w-full max-w-4xl">
+          {users.length > 0 ? (
+            users.map(user => (
               <div
                 key={user.id}
                 className="bg-white border border-gray-200 rounded-lg shadow-lg p-4 cursor-pointer"

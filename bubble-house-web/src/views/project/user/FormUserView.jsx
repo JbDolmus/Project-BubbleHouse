@@ -51,8 +51,8 @@ export default function FormUserView({ isVisible, onClose, refreshUsers, selecte
     }, [selectedUser, setValue, reset]);
 
     const isDuplicateUser = (formData) => {
-        const isDuplicateEmail = users.results.some(user => user.email === formData.email && user.id !== selectedUser?.id);
-        const isDuplicateUsername = users.results.some(user => user.username === formData.userName && user.id !== selectedUser?.id);
+        const isDuplicateEmail = users.some(user => user.email === formData.email && user.id !== selectedUser?.id);
+        const isDuplicateUsername = users.some(user => user.username === formData.userName && user.id !== selectedUser?.id);
 
         if (isDuplicateEmail && isDuplicateUsername) {
             ToastError("El correo y el nombre de usuario ya estan en uso.");
@@ -220,7 +220,7 @@ export default function FormUserView({ isVisible, onClose, refreshUsers, selecte
                             minLength: { value: 8, message: "Debe tener al menos 8 caracteres" }
                         })}
                     />
-                    <Tooltip title={showPassword.newPassword ? "Ocultar" : "Mostrar"}>
+                    <Tooltip title={showPassword.newPassword ? "Ocultar" : "Mostrar"} placement='top'>
                         <button
                             type="button"
                             className="absolute right-3 flex items-center justify-center"
@@ -246,7 +246,7 @@ export default function FormUserView({ isVisible, onClose, refreshUsers, selecte
                             validate: value => value === newPassword || 'Las contraseñas no coinciden'
                         })}
                     />
-                    <Tooltip title={showPassword.repeatPassword ? "Ocultar" : "Mostrar"}>
+                    <Tooltip title={showPassword.repeatPassword ? "Ocultar" : "Mostrar"} placement='top'>
                         <button
                             type="button"
                             className="absolute right-3 flex items-center justify-center"

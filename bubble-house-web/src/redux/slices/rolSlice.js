@@ -8,43 +8,48 @@ const rolSlice = createSlice({
   name: "rol",
   initialState: {
     rolls: [],
-    message: "",
+    messageRol: "",
     loading: false,
-    errorRedux: null,
+    errorRolRedux: null,
   },
   reducers: {},
   extraReducers: (builder) => {
-    
+
     // Get rolls
     builder.addCase(getRolls.pending, (state) => {
       state.loading = true;
-      state.errorRedux = null;
+      state.errorRolRedux = null;
     });
     builder.addCase(getRolls.fulfilled, (state, action) => {
-      state.loading = false;
-      state.rolls = action.payload.results;
-      state.message = "Roles obtenidos exitosamente!";
+      if (action.payload.results) {
+        state.loading = false;
+        state.rolls = action.payload.results;
+        state.messageRol = "Roles obtenidos exitosamente!";
+      } else {
+        state.errorRolRedux = "No se encontraron roles";
+        state.loading = false;
+      }
     });
     builder.addCase(getRolls.rejected, (state) => {
       state.loading = false;
-      state.errorRedux = "Ocurrió un error al obtener los roles!";
+      state.errorRolRedux = "Ocurrió un error al obtener los roles!";
     });
 
     // Limpiar alertas
     builder.addCase(cleanAlertRoll.pending, (state) => {
       state.loading = false;
-      state.errorRedux = null;
-      state.message = null;
+      state.errorRolRedux = null;
+      state.messageRol = null;
     });
     builder.addCase(cleanAlertRoll.fulfilled, (state) => {
       state.loading = false;
-      state.errorRedux = null;
-      state.message = "";
+      state.errorRolRedux = null;
+      state.messageRol = "";
     });
     builder.addCase(cleanAlertRoll.rejected, (state) => {
       state.loading = false;
-      state.errorRedux = null;
-      state.message = "";
+      state.errorRolRedux = null;
+      state.messageRol = "";
     });
 
   },
