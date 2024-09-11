@@ -35,7 +35,6 @@ const userSlice = createSlice({
       state.message = "";
     });
     builder.addCase(loginUser.fulfilled, (state, action) => {
-      console.log(action.payload);
       const data = action.payload;
       if (data.access && data.refresh) {
         state.token = data.access;
@@ -78,12 +77,11 @@ const userSlice = createSlice({
       state.message = "";
     });
     builder.addCase(editUser.fulfilled, (state, action) => {
-      if (action.payload.resultado) {
-        state.message = "Actualización exitosa!";
-        state.userSession = { ...action.payload.usuario };
-        sessionStorage.setItem("user", JSON.stringify(action.payload.usuario));
+      if (action.payload) {
+        state.loading = false;
+        state.message = "Actualización exitosa";
       } else {
-        state.errorRedux = "Ocurrió un error al actualizar el usuario!";
+        state.errorRedux = action.payload.current_password || action.payload.detail;
       }
       state.loading = false;
     });
@@ -204,8 +202,16 @@ const userSlice = createSlice({
       state.errorRedux = null;
     });
     builder.addCase(getUsers.fulfilled, (state, action) => {
-      state.loading = false;
-      state.users = action.payload;
+      if(action.payload.results){
+        state.loading = false;
+        state.users = action.payload.results;
+        state.message = "Usuarios obtenidos exitosamente!";
+      }else{
+        state.loading = false;
+        state.users = [];
+        state.message = "No hay usuarios registrados!";
+      }
+     
     });
     builder.addCase(getUsers.rejected, (state) => {
       state.loading = false;
