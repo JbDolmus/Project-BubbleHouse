@@ -70,7 +70,7 @@ export default function UsersView() {
           </button>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 w-full max-w-4xl">
-          {users.length > 0 ? (
+          {users && users.length > 0 ? (
             users.map(user => (
               <div
                 key={user.id}

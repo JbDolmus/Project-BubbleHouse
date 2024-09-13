@@ -8,7 +8,7 @@ import {
     cleanAlertSubcategory
 } from "../thunks/subcategoryThunks.js";
 
-const userSlice = createSlice({
+const subcategorySlice = createSlice({
     name: "subcategory",
     initialState: {
         subcategory: null,
@@ -138,4 +138,4 @@ const userSlice = createSlice({
     },
 });
 
-export default userSlice.reducer;
+export default subcategorySlice.reducer;

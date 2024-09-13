@@ -5,6 +5,7 @@ import userSlice from "./slices/userSlice";
 import categorySlice from "./slices/categorySlice";
 import rolSlice from "./slices/rolSlice";
 import subcategorySlice from "./slices/subcategorySlice";
+import productSlice from "./slices/productSlice";
 
 const userPersistConfig = {
   key: "user",
@@ -18,6 +19,7 @@ const rootReducer = combineReducers({
   category: categorySlice,
   subcategory: subcategorySlice,
   rol: rolSlice,
+  product: productSlice,
 });
 
 export default rootReducer;

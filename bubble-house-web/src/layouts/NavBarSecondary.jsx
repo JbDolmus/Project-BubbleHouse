@@ -23,23 +23,22 @@ export default function NavBarSecondary({ title }) {
     <div className="flex justify-center items-center overflow-x-auto bg-white p-2 w-full space-x-4 md:space-x-8">
       <div className="flex justify-center items-center space-x-4 md:space-x-8">
         {icons.map(({ Component, title, path }, index) => (
-          <div
-            key={index}
-            className="flex-shrink-0 flex flex-col items-center rounded-lg p-2 md:p-4 hover:bg-gray-300 cursor-pointer transition-colors duration-200"
-            onClick={() => handleIconClick(title)}
-          >
-            <Tooltip title={title}>
-              <Link to={path}>
+          <Tooltip title={title} key={index}>
+            <Link to={path}>
+              <div
+                className="flex-shrink-0 flex flex-col items-center rounded-lg p-2 md:p-4 hover:bg-gray-300 cursor-pointer transition-colors duration-200"
+                onClick={() => handleIconClick(title)}
+              >
                 <Component
                   className={`text-2xl md:text-4xl ${selectedIcon === title ? 'text-blue-400' : 'text-gray-800'
                     }`}
                 />
-              </Link>
-            </Tooltip>
-            {selectedIcon === title && (
-              <div className="w-full border-b-4 border-blue-400 mt-2 -mb-4"></div>
-            )}
-          </div>
+                {selectedIcon === title && (
+                  <div className="w-full border-b-4 border-blue-400 mt-2 -mb-4"></div>
+                )}
+              </div>
+            </Link>
+          </Tooltip>
         ))}
       </div>
     </div>

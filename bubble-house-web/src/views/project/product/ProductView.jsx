@@ -1,9 +1,49 @@
-import React from 'react'
-import NavBarPrincipal from '../../../layouts/NavBarPrincipal'
+import { useEffect, useState } from 'react'
+import NavBarPrincipal from '@/layouts/NavBarPrincipal'
 import { FaPlus } from 'react-icons/fa6'
 import { Link } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux';
+import { getSubcategories } from '@/redux/thunks/subcategoryThunks';
+import { getProducts } from '@/redux/thunks/productThunks';
+import { ToastError } from "@/assets/js/toastify";
+import FormProduct from "./FormProduct";
 
 export default function ProductView() {
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const dispatch = useDispatch();
+  const { token } = useSelector(state => state.user);
+  const { products, errorRedux } = useSelector(state => state.product);
+  const { subcategories } = useSelector(state => state.subcategory);
+
+  const loadProducts = () => {
+    if (token) {
+      dispatch(getProducts(token));
+      dispatch(getSubcategories(token));
+    }
+  };
+
+  useEffect(() => {
+    loadProducts();
+  }, [dispatch, token]);
+
+  useEffect(() => {
+    if (errorRedux) {
+      ToastError(errorRedux);
+    }
+  }, [errorRedux]);
+
+  const showModal = (product = null) => {
+    setSelectedProduct(product);
+    setIsModalVisible(true);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+    setSelectedProduct(null);
+  };
+
   return (
     <>
       <NavBarPrincipal
@@ -27,7 +67,7 @@ export default function ProductView() {
           </Link>
           <button
             type='button'
-            onClick={() => { }}
+            onClick={() => showModal()}
             className="flex flex-col items-center bg-blue-500 hover:bg-blue-600 text-white font-bold px-32 py-4 md:px-6 md:py-2 md:flex-row rounded"
           >
             <FaPlus className="text-3xl md:text-xl md:mx-1" />
@@ -35,9 +75,30 @@ export default function ProductView() {
           </button>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full max-w-4xl">
-
+          {products && products.length > 0 ? (
+            products.map(product => (
+              <div
+                key={product.id}
+                className="bg-white border border-gray-200 rounded-lg shadow-lg p-4 cursor-pointer"
+                onClick={() => showModal(product)}
+              >
+                <h2 className="text-xl font-semibold mb-2">Subcategoría: {product.subcategory.name}</h2>
+                <h3 className="text-xl mb-2">{product.name}</h3>
+              </div>
+            ))
+          ) : (
+            <p className="text-white text-xl">No hay productos por mostrar</p>
+          )}
         </div>
       </div>
+
+      <FormProduct
+        isVisible={isModalVisible}
+        onClose={handleCancel}
+        refreshProducts={loadProducts}
+        selectedProduct={selectedProduct}
+        subcategories={subcategories}
+      />
     </>
   )
 }
