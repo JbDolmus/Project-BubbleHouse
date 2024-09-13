@@ -64,23 +64,22 @@ export default function NavBarPrincipal({ title }) {
     <div className="flex justify-center items-center overflow-x-auto bg-white p-2 w-full space-x-4 md:space-x-8 ">
       <div className="flex justify-center items-center space-x-4 md:space-x-8">
         {icons.map(({ Component, title, path, disabled }, index) => (
-          <div
-            key={index}
-            className={`flex-shrink-0 flex flex-col items-center rounded-lg p-2 md:p-4 cursor-pointer transition-colors duration-200 ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-300'}`}
-            onClick={() => handleIconClick(title, path, disabled)}
-          >
-            <Tooltip title={title}>
-              <Link to={disabled ? "#" : path}>
+          <Tooltip title={title} key={index}>
+            <Link to={disabled ? "#" : path}>
+              <div
+                className={`flex-shrink-0 flex flex-col items-center rounded-lg p-2 md:p-4 cursor-pointer transition-colors duration-200 ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-300'}`}
+                onClick={() => handleIconClick(title, path, disabled)}
+              >
                 <Component
                   className={`text-2xl md:text-4xl ${selectedIcon === title ? 'text-blue-400' : 'text-gray-800'
                     }`}
                 />
-              </Link>
-            </Tooltip>
-            {selectedIcon === title && (
-              <div className="w-full border-b-4 border-blue-400 mt-2 -mb-4"></div>
-            )}
-          </div>
+                {selectedIcon === title && (
+                  <div className="w-full border-b-4 border-blue-400 mt-2 -mb-4"></div>
+                )}
+              </div>
+            </Link>
+          </Tooltip>
         ))}
       </div>
     </div>

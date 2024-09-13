@@ -8,7 +8,7 @@ import {
     cleanAlertCategory
 } from "../thunks/categoryThunks.js";
 
-const userSlice = createSlice({
+const categorySlice = createSlice({
     name: "category",
     initialState: {
         category: null,
@@ -138,4 +138,4 @@ const userSlice = createSlice({
     },
 });
 
-export default userSlice.reducer;
+export default categorySlice.reducer;
