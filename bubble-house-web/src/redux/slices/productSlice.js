@@ -12,19 +12,7 @@ const productSlice = createSlice({
     name: "product",
     initialState: {
         product: null,
-        products: [
-            {
-                id: 1,
-                name: "Leche",
-                price: 2000,
-                tax: 0.15,
-                subcategory: {
-                    id: 1,
-                    name: "Lacteos",
-                },
-                isSold: false,
-            }
-        ],
+        products: [],
         message: "",
         loading: false,
         errorRedux: null,
@@ -40,7 +28,7 @@ const productSlice = createSlice({
         builder.addCase(getProducts.fulfilled, (state, action) => {
             if (action.payload) {
                 state.loading = false;
-                state.products = action.payload;
+                state.products = action.payload.results;
             } else {
                 state.errorRedux = "Ocurrió un error al cargar los productos!";
             }

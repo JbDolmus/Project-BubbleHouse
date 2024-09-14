@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import NavBarPrincipal from '@/layouts/NavBarPrincipal'
-import { FaPlus } from 'react-icons/fa6'
+import { FaPlus, FaCheckCircle, FaTimesCircle } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux';
 import { getSubcategories } from '@/redux/thunks/subcategoryThunks';
@@ -16,7 +16,6 @@ export default function ProductView() {
   const { token } = useSelector(state => state.user);
   const { products, errorRedux } = useSelector(state => state.product);
   const { subcategories } = useSelector(state => state.subcategory);
-
   const loadProducts = () => {
     if (token) {
       dispatch(getProducts(token));
@@ -79,11 +78,27 @@ export default function ProductView() {
             products.map(product => (
               <div
                 key={product.id}
-                className="bg-white border border-gray-200 rounded-lg shadow-lg p-4 cursor-pointer"
+                className="bg-white border border-gray-200 rounded-lg shadow-lg p-4 cursor-pointer hover:shadow-2xl"
                 onClick={() => showModal(product)}
               >
                 <h2 className="text-xl font-semibold mb-2">Subcategoría: {product.subcategory.name}</h2>
                 <h3 className="text-xl mb-2">{product.name}</h3>
+                
+                <p className={`text-lg font-semibold px-4 py-2 rounded-full ${product.is_sold_out
+                    ? 'bg-red-100 text-red-600 border border-red-600'
+                    : 'bg-green-100 text-green-600 border border-green-600'
+                  } flex items-center justify-center gap-2`}
+                >
+                  {product.is_sold_out ? (
+                    <>
+                      <FaTimesCircle className="text-xl" /> Agotado
+                    </>
+                  ) : (
+                    <>
+                      <FaCheckCircle className="text-xl" /> Disponible
+                    </>
+                  )}
+                </p>
               </div>
             ))
           ) : (

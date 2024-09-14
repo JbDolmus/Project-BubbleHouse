@@ -25,7 +25,7 @@ const FormProduct = ({ isVisible, onClose, refreshProducts, selectedProduct, sub
             price: 0,
             tax: 0,
             subcategory: "",
-            isSold: false,
+            isSoldOut: false,
         },
     });
 
@@ -34,8 +34,8 @@ const FormProduct = ({ isVisible, onClose, refreshProducts, selectedProduct, sub
             setValue('name', selectedProduct.name);
             setValue('price', selectedProduct.price);
             setValue('tax', selectedProduct.tax);
-            setValue('isSold', selectedProduct.isSold);
             setValue('subcategory', selectedProduct.subcategory.id);
+            setValue('isSoldOut', selectedProduct.is_sold_out);
         } else {
             reset();
         }
@@ -68,10 +68,10 @@ const FormProduct = ({ isVisible, onClose, refreshProducts, selectedProduct, sub
                 subcategory_id: formData.subcategory,
                 price: formData.price,
                 tax: formData.tax,
-                isSold: formData.isSold
+                is_sold_out: formData.isSoldOut,
             }
         };
-
+        
         if (selectedProduct) {
             dispatch(editProduct(productData))
                 .unwrap()
@@ -80,7 +80,7 @@ const FormProduct = ({ isVisible, onClose, refreshProducts, selectedProduct, sub
                     onClose();
                     reset();
                     refreshProducts();
-                    dispatch(cleanAlertSubcategory());
+                    dispatch(cleanAlertProduct());
                 })
         } else {
             dispatch(addProduct(productData))
@@ -91,7 +91,7 @@ const FormProduct = ({ isVisible, onClose, refreshProducts, selectedProduct, sub
                     onClose();
                     reset();
                     refreshProducts();
-                    dispatch(cleanAlertSubcategory());
+                    dispatch(cleanAlertProduct());
                 })
         }
     }
@@ -202,6 +202,20 @@ const FormProduct = ({ isVisible, onClose, refreshProducts, selectedProduct, sub
                     </select>
                     {errors.subcategory && <ErrorMessage>{errors.subcategory.message}</ErrorMessage>}
                 </div>
+
+                {/* Producto Vendido */}
+                {selectedProduct && (
+                    <div className="flex items-center gap-2">
+                        <input
+                            id="isSoldOut"
+                            type="checkbox"
+                            className="w-4 h-4 border-gray-300 rounded focus:ring-blue-400 cursor-pointer"
+                            {...register("isSoldOut")}
+                        />
+                        <label className="font-medium" htmlFor="isSoldOut">¿Producto vendido?</label>
+                    </div>
+                )}
+
 
                 {/* Botones */}
                 <div className={`flex justify-center items-center gap-4 ${selectedProduct ? 'flex-row' : 'flex-col'}`}>
