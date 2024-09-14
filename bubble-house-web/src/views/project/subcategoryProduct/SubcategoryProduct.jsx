@@ -80,7 +80,7 @@ export default function SubcategoryProduct() {
                         subcategories.map(subcategory => (
                             <div
                                 key={subcategory.id}
-                                className="bg-white border border-gray-200 rounded-lg shadow-lg p-4 cursor-pointer"
+                                className="bg-white border border-gray-200 rounded-lg shadow-lg p-4 cursor-pointer hover:shadow-2xl"
                                 onClick={() => showModal(subcategory)}
                             >
                                 <h2 className="text-xl font-semibold mb-2">Categoría: {subcategory.category.name}</h2>
