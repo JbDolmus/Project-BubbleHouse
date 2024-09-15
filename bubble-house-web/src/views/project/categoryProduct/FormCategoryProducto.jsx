@@ -106,7 +106,11 @@ export default function FormCategoryProducto({ isVisible, onClose, refreshCatego
 
     return (
         <Modal
-            title={selectedCategory ? "Modificar Categoría" : "Agregar Categoría"}
+            title={
+                <span className="flex text-center text-lg font-semibold justify-center">
+                    {selectedCategory ? "Modificar Categoría" : "Agregar Categoría"}
+                </span>
+            }
             open={isVisible}
             onCancel={() => {
                 reset();
@@ -135,7 +139,7 @@ export default function FormCategoryProducto({ isVisible, onClose, refreshCatego
                     />
                     {errors.name && <ErrorMessage>{errors.name.message}</ErrorMessage>}
                 </div>
-                
+
                 {/* Botones */}
                 <div className={`flex justify-center items-center gap-4 ${selectedCategory ? 'flex-row' : 'flex-col'}`}>
                     <Button type="primary" htmlType="submit" className="w-40">

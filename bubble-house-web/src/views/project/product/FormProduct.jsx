@@ -71,7 +71,7 @@ const FormProduct = ({ isVisible, onClose, refreshProducts, selectedProduct, sub
                 is_sold_out: formData.isSoldOut,
             }
         };
-        
+
         if (selectedProduct) {
             dispatch(editProduct(productData))
                 .unwrap()
@@ -119,7 +119,11 @@ const FormProduct = ({ isVisible, onClose, refreshProducts, selectedProduct, sub
 
     return (
         <Modal
-            title={selectedProduct ? "Modificar Producto" : "Agregar Producto"}
+            title={
+                <span className="flex text-center text-lg font-semibold justify-center">
+                    {selectedProduct ? "Modificar Producto" : "Agregar Producto"}
+                </span>
+            }
             open={isVisible}
             onCancel={() => {
                 reset();
@@ -166,17 +170,17 @@ const FormProduct = ({ isVisible, onClose, refreshProducts, selectedProduct, sub
                     {errors.price && <ErrorMessage>{errors.price.message}</ErrorMessage>}
                 </div>
 
-                {/* Impuesto */}
+                {/* Descuento */}
                 <div className="flex flex-col gap-2">
-                    <label className="font-medium" htmlFor="tax">Impuesto (%)</label>
+                    <label className="font-medium" htmlFor="tax">Descuento (%)</label>
                     <input
                         id="tax"
                         type="number"
-                        placeholder="Impuesto del Producto"
+                        placeholder="Descuento del Producto"
                         className="w-full p-3 border-gray-300 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                         {...register("tax", {
-                            required: "El impuesto es obligatorio",
-                            min: { value: 0, message: "El impuesto no puede ser menor a 0" },
+                            required: "El descuento es obligatorio",
+                            min: { value: 0, message: "El descuento no puede ser menor a 0" },
                             valueAsNumber: true,
                         })}
                     />

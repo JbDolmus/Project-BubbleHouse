@@ -144,7 +144,11 @@ export default function FormUserView({ isVisible, onClose, refreshUsers, selecte
 
     return (
         <Modal
-            title={selectedUser ? "Modificar Usuario" : "Agregar Usuario"}
+            title={
+                <span className="flex text-center text-lg font-semibold justify-center">
+                    {selectedUser ? "Modificar Usuario" : "Agregar Usuario"}
+                </span>
+            }
             open={isVisible}
             onCancel={() => {
                 reset();

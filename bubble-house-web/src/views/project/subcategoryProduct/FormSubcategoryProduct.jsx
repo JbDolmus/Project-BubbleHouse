@@ -111,7 +111,11 @@ export default function FormSubcategoryProduct({ isVisible, onClose, refreshSubc
 
   return (
     <Modal
-      title={selectedSubcategory ? "Modificar Subcategoría" : "Agregar Subcategoría"}
+      title={
+        <span className="flex text-center text-lg font-semibold justify-center">
+          {selectedSubcategory ? "Modificar Subcategoría" : "Agregar Subcategoría"}
+        </span>
+      }
       open={isVisible}
       onCancel={() => {
         reset();
