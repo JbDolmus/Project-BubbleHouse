@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { FaPlus } from "react-icons/fa6";
+import { FaPlus, FaSearch } from "react-icons/fa";
 import NavBarPrincipal from '@/layouts/NavBarPrincipal';
 import { useDispatch, useSelector } from 'react-redux';
-import { getUsers,cleanAlert } from '@/redux/thunks/userThunks';
+import { getUsers, cleanAlert } from '@/redux/thunks/userThunks';
 import { ToastError } from '@/assets/js/toastify.js';
 import FormUserView from './FormUserView';
 import { getRolls, cleanAlertRoll } from '@/redux/thunks/rolThunks';
+import { removeAccents } from "@/utils/removeAccents";
 
 export default function UsersView() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredUsers, setFilteredUsers] = useState([]);
   const dispatch = useDispatch();
   const { users, token, errorRedux, message } = useSelector(state => state.user);
   const { rolls, messageRol } = useSelector(state => state.rol);
@@ -29,11 +32,11 @@ export default function UsersView() {
 
   useEffect(() => {
 
-    if(message === "Usuarios obtenidos exitosamente!"){
+    if (message === "Usuarios obtenidos exitosamente!") {
       dispatch(cleanAlert());
     }
 
-    if(messageRol === "Roles obtenidos exitosamente!"){
+    if (messageRol === "Roles obtenidos exitosamente!") {
       dispatch(cleanAlertRoll());
     }
 
@@ -43,6 +46,18 @@ export default function UsersView() {
     }
   }, [errorRedux, message, messageRol, dispatch]);
 
+  useEffect(() => {
+    if (users) {
+      const filtered = users.filter(user =>
+        removeAccents(user.username.toLowerCase()).includes(removeAccents(searchTerm.toLowerCase())) ||
+        removeAccents(user.email.toLowerCase()).includes(removeAccents(searchTerm.toLowerCase())) ||
+        user.rolls_details?.some(roll =>
+          removeAccents(roll.name.toLowerCase()).includes(removeAccents(searchTerm.toLowerCase()))
+        )
+      );
+      setFilteredUsers(filtered);
+    }
+  }, [searchTerm, users]);
 
   const showModal = (user = null) => {
     setSelectedUser(user);
@@ -69,9 +84,19 @@ export default function UsersView() {
             Nuevo Usuario
           </button>
         </div>
+        <div className="relative mb-6 w-full max-w-4xl">
+          <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+          <input
+            type="text"
+            placeholder="Buscar usuario..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10 p-2 w-full border rounded-md"
+          />
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 w-full max-w-4xl">
-          {users && users.length > 0 ? (
-            users.map(user => (
+          {filteredUsers && filteredUsers.length > 0 ? (
+            filteredUsers.map(user => (
               <div
                 key={user.id}
                 className="bg-white border border-gray-200 rounded-lg shadow-lg p-4 cursor-pointer hover:shadow-2xl"

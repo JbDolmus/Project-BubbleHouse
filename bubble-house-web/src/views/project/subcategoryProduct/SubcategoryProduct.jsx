@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import NavBarPrincipal from '@/layouts/NavBarPrincipal'
-import { FaPlus, FaArrowLeft } from 'react-icons/fa6'
+import { FaPlus, FaArrowLeft, FaSearch } from 'react-icons/fa'
 import { useDispatch, useSelector } from 'react-redux';
 import { getSubcategories } from '@/redux/thunks/subcategoryThunks';
 import { ToastError } from "@/assets/js/toastify";
@@ -8,11 +8,14 @@ import FormSubcategoryProduct from "./FormSubcategoryProduct";
 import { getCategories } from "@/redux/thunks/categoryThunks";
 import { Tooltip } from 'antd';
 import { Link } from 'react-router-dom';
+import { removeAccents } from '@/utils/removeAccents';
 
 export default function SubcategoryProduct() {
 
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedSubcategory, setSelectedSubcategory] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filteredSubcategories, setFilteredSubcategories] = useState([]);
     const dispatch = useDispatch();
     const { token } = useSelector(state => state.user);
     const { subcategories, errorRedux } = useSelector(state => state.subcategory);
@@ -34,6 +37,16 @@ export default function SubcategoryProduct() {
             ToastError(errorRedux);
         }
     }, [errorRedux]);
+
+    useEffect(() => {
+        if (subcategories) {
+            const filtered = subcategories.filter(subcategory =>
+                removeAccents(subcategory.name.toLowerCase()).includes(removeAccents(searchTerm.toLowerCase())) ||
+                removeAccents(subcategory.category.name.toLowerCase()).includes(removeAccents(searchTerm.toLowerCase()))
+            );
+            setFilteredSubcategories(filtered);
+        }
+    }, [searchTerm, subcategories]);
 
     const showModal = (subcategory = null) => {
         setSelectedSubcategory(subcategory);
@@ -75,9 +88,20 @@ export default function SubcategoryProduct() {
                         Nueva Subcategoría
                     </button>
                 </div>
+                {/* Input de búsqueda */}
+                <div className="relative mb-6 w-full max-w-4xl">
+                    <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                    <input
+                        type="text"
+                        placeholder="Buscar subcategoría..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="pl-10 p-2 w-full border rounded-md"
+                    />
+                </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 w-full max-w-4xl">
-                    {subcategories && subcategories.length > 0 ? (
-                        subcategories.map(subcategory => (
+                    {filteredSubcategories && filteredSubcategories.length > 0 ? (
+                        filteredSubcategories.map(subcategory => (
                             <div
                                 key={subcategory.id}
                                 className="bg-white border border-gray-200 rounded-lg shadow-lg p-4 cursor-pointer hover:shadow-2xl"
