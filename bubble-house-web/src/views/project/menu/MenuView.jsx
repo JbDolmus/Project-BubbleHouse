@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
+import { AiOutlineFrown } from 'react-icons/ai';
 import NavBarSecondary from '@/layouts/NavBarSecondary';
 import { SweetAlertQuestion } from '@/assets/js/sweetAlert';
 import { getProducts } from '@/redux/thunks/productThunks';
@@ -113,25 +114,37 @@ export default function MenuView() {
 
         <div className='p-4'>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredProducts.length > 0 && filteredProducts.map((product) => (
-              <div
-                key={product.id}
-                className={`p-6 cursor-pointer rounded-lg hover:shadow-lg ${product.is_sold_out ? "bg-gray-500 text-white relative" : "bg-white"}`}
-                onClick={() => handleAddToCart(product)}
-              >
-                {product.is_sold_out && (
-                  <div className="absolute inset-0 flex items-center cursor-no-drop justify-center rounded-lg bg-gray-700 bg-opacity-50 text-white font-bold">
-                    Agotado
-                  </div>
-                )}
-                <h3 className="font-bold text-lg">{product.name}</h3>
-                <p className="text-sm text-gray-600">{product.subcategory.name}</p>
-                <p className="text-lg font-semibold">${product.price - product.tax}</p>
-                {product.tax > 0 && (
-                  <p className="text-sm text-red-500 line-through">${product.price}</p>
-                )}
+            {filteredProducts.length > 0 ? (
+              filteredProducts.map((product) => (
+                <div
+                  key={product.id}
+                  className={`p-6 cursor-pointer rounded-lg hover:shadow-lg ${product.is_sold_out ? "bg-gray-500 text-white relative" : "bg-white"}`}
+                  onClick={() => handleAddToCart(product)}
+                >
+                  {product.is_sold_out && (
+                    <div className="absolute inset-0 flex items-center cursor-no-drop justify-center rounded-lg bg-gray-700 bg-opacity-50 text-white font-bold">
+                      Agotado
+                    </div>
+                  )}
+                  <h3 className="font-bold text-lg">{product.name}</h3>
+                  <p className="text-sm text-gray-600">{product.subcategory.name}</p>
+                  <p className="text-lg font-semibold">${product.price - product.tax}</p>
+                  {product.tax > 0 && (
+                    <p className="text-sm text-red-500 line-through">${product.price}</p>
+                  )}
+                </div>
+              ))
+            ) : (
+              <div className="flex flex-col items-center justify-center h-64 col-span-full bg-red-100 border border-red-300 rounded-lg shadow-lg">
+                <AiOutlineFrown className="text-red-500 text-4xl mb-2" />
+                <p className="text-red-600 text-lg font-bold text-center">
+                  No hay productos disponibles.
+                </p>
+                <p className="text-gray-500 text-sm text-center">
+                  Vuelve más tarde o explora otras categorías.
+                </p>
               </div>
-            ))}
+            )}
           </div>
         </div>
       </div>
