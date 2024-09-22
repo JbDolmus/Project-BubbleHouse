@@ -18,12 +18,11 @@ export const addProduct = createAsyncThunk("product/addProduct", async (data) =>
 });
 
 // Get products
-export const getProducts = createAsyncThunk("product/getProducts", async (token) => {
+export const getProducts = createAsyncThunk("product/getProducts", async () => {
     const response = await fetch(`${urlBase}/product/`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
             Accept: "application/json",
         },
     });

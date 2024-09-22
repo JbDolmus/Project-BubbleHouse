@@ -16,18 +16,15 @@ export default function CategoryProduct() {
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredCategories, setFilteredCategories] = useState([]);
     const dispatch = useDispatch();
-    const { token } = useSelector(state => state.user);
     const { categories, errorRedux } = useSelector(state => state.category);
 
     const loadCategories = () => {
-        if (token) {
-            dispatch(getCategories(token));
-        }
+        dispatch(getCategories());
     };
 
     useEffect(() => {
         loadCategories();
-    }, [dispatch, token]);
+    }, [dispatch]);
 
     useEffect(() => {
         if (errorRedux) {

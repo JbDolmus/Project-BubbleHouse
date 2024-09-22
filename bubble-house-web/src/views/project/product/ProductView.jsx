@@ -17,19 +17,16 @@ export default function ProductView() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredProducts, setFilteredProducts] = useState([]);
   const dispatch = useDispatch();
-  const { token } = useSelector(state => state.user);
   const { products, errorRedux } = useSelector(state => state.product);
   const { subcategories } = useSelector(state => state.subcategory);
   const loadProducts = () => {
-    if (token) {
-      dispatch(getProducts(token));
-      dispatch(getSubcategories(token));
-    }
+      dispatch(getProducts());
+      dispatch(getSubcategories());
   };
 
   useEffect(() => {
     loadProducts();
-  }, [dispatch, token]);
+  }, [dispatch]);
 
   useEffect(() => {
     if (errorRedux) {

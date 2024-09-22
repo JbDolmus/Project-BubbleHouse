@@ -18,12 +18,11 @@ export const addCategory = createAsyncThunk("category/addCategory", async (data)
 });
 
 // Get categories
-export const getCategories = createAsyncThunk("category/getCategories", async (token) => {
+export const getCategories = createAsyncThunk("category/getCategories", async () => {
     const response = await fetch(`${urlBase}/productcategory/`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
             Accept: "application/json",
         },
     });
