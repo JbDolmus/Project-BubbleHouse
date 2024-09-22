@@ -18,12 +18,11 @@ export const addSubcategory = createAsyncThunk("subcategory/addSubcategory", asy
 });
 
 // Get subcategories
-export const getSubcategories = createAsyncThunk("subcategory/getSubcategories", async (token) => {
+export const getSubcategories = createAsyncThunk("subcategory/getSubcategories", async () => {
     const response = await fetch(`${urlBase}/productsubcategory/`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
             Accept: "application/json",
         },
     });

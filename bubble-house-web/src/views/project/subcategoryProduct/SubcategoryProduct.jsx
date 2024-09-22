@@ -17,20 +17,17 @@ export default function SubcategoryProduct() {
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredSubcategories, setFilteredSubcategories] = useState([]);
     const dispatch = useDispatch();
-    const { token } = useSelector(state => state.user);
     const { subcategories, errorRedux } = useSelector(state => state.subcategory);
     const { categories } = useSelector(state => state.category);
 
     const loadSubcategories = () => {
-        if (token) {
-            dispatch(getSubcategories(token));
-            dispatch(getCategories(token));
-        }
+            dispatch(getSubcategories());
+            dispatch(getCategories());
     };
 
     useEffect(() => {
         loadSubcategories();
-    }, [dispatch, token]);
+    }, [dispatch]);
 
     useEffect(() => {
         if (errorRedux) {
