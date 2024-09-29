@@ -1,0 +1,241 @@
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { Button, Modal } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { addIngredient, editIngredient, deleteIngredient, cleanAlertIngredient } from '@/redux/thunks/ingredientThunks';
+import { ToastError, ToastSuccess } from "@/assets/js/toastify";
+import { SweetAlertEliminar } from "@/assets/js/sweetAlert";
+import ErrorMessage from '@/components/ErrorMessage';
+
+export default function FormIngredient({ isVisible, onClose, refreshIngredients, selectedIngredient, categories }) {
+
+    const { token } = useSelector(state => state.user);
+    const { ingredients } = useSelector(state => state.ingredient);
+    const dispatch = useDispatch();
+
+    const {
+        register,
+        handleSubmit,
+        reset,
+        setValue,
+        formState: { errors },
+    } = useForm({
+        defaultValues: {
+            name: "",
+            price: 0,
+            tax: 0,
+            idCategoryIngredient: "",
+            is_sold_out: false,
+        },
+    });
+
+    useEffect(() => {
+        if (selectedIngredient) {
+            setValue('name', selectedIngredient.name);
+            setValue('price', selectedIngredient.price);
+            setValue('tax', selectedIngredient.tax);
+            setValue('idCategoryIngredient', selectedIngredient.idCategoryIngredient.id);
+            setValue('is_sold_out', selectedIngredient.is_sold_out);
+        } else {
+            reset();
+        }
+    }, [selectedIngredient, setValue, reset]);
+
+    const isDuplicateIngredient = (formData) => {
+        const isDuplicateName = ingredients.some(ingredient => ingredient.name === formData.name && ingredient.id !== selectedIngredient?.id);
+        if (isDuplicateName) {
+            ToastError("Ese ingrediente ya existe.");
+            return true;
+        }
+
+        return false;
+    };
+
+    const handleAddOrEditIngredient = (formData) => {
+        if (!token) {
+            ToastError("Token no disponible");
+            return;
+        }
+
+        if (isDuplicateIngredient(formData)) return;
+
+        const ingredientData = {
+            id: selectedIngredient?.id,
+            token,
+            ingredient: {
+                name: formData.name,
+                idCategoryIngredient_id: formData.idCategoryIngredient,
+                price: formData.price,
+                tax: formData.tax,
+                is_sold_out: formData.is_sold_out,
+            }
+        };
+
+        if (selectedIngredient) {
+            dispatch(editIngredient(ingredientData))
+                .unwrap()
+                .then(() => {
+                    ToastSuccess("Ingrediente actualizado con éxito");
+                    onClose();
+                    reset();
+                    refreshIngredients();
+                    dispatch(cleanAlertIngredient());
+                })
+        } else {
+            dispatch(addIngredient(ingredientData))
+                .unwrap()
+                .then(() => {
+
+                    ToastSuccess("Ingrediente agregado con éxito");
+                    onClose();
+                    reset();
+                    refreshIngredients();
+                    dispatch(cleanAlertIngredient());
+                })
+        }
+    }
+
+    const handleDeleteIngredient = () => {
+        if (!token) {
+            ToastError("Token no disponible");
+            return;
+        }
+
+        SweetAlertEliminar("¿Estás seguro de que deseas eliminar este ingrediente?", () => {
+            dispatch(deleteIngredient({ id: selectedIngredient.id, token }))
+                .unwrap()
+                .then(() => {
+                    ToastSuccess("Ingrediente eliminado con éxito");
+                    setTimeout(() => {
+                        onClose();
+                        reset();
+                        refreshIngredients();
+                        dispatch(cleanAlertIngredient());
+                    }, 0);
+                })
+        });
+    }
+
+    return (
+        <Modal
+            title={
+                <span className="flex text-center text-lg font-semibold justify-center">
+                    {selectedIngredient ? "Modificar Ingrediente" : "Agregar Ingrediente"}
+                </span>
+            }
+            open={isVisible}
+            onCancel={() => {
+                reset();
+                onClose();
+            }}
+            footer={null}
+            centered
+            width={500}
+        >
+            <form onSubmit={handleSubmit(handleAddOrEditIngredient)} className="space-y-4">
+                {/* Nombre del Ingrediente */}
+                <div className="flex flex-col gap-2">
+                    <label className="font-medium" htmlFor="name">Nombre del Ingrediente</label>
+                    <input
+                        id="name"
+                        type="text"
+                        placeholder="Nombre del Ingrediente"
+                        className="w-full p-3 border-gray-300 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        {...register("name", {
+                            required: "El nombre del ingrediente es obligatorio",
+                            pattern: {
+                                value: /^[a-zA-Z0-9@áéíóúüÁÉÍÓÚÜñÑ\s]+$/,
+                                message: "El nombre solo puede contener letras, números, '@' y espacios",
+                            },
+                        })}
+                    />
+                    {errors.name && <ErrorMessage>{errors.name.message}</ErrorMessage>}
+                </div>
+
+                {/* Precio del Ingrediente */}
+                <div className="flex flex-col gap-2">
+                    <label className="font-medium" htmlFor="price">Precio</label>
+                    <input
+                        id="price"
+                        type="number"
+                        placeholder="Precio del Ingrediente"
+                        className="w-full p-3 border-gray-300 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        {...register("price", {
+                            required: "El precio es obligatorio",
+                            min: { value: 1, message: "El precio debe ser mayor a 0" },
+                            valueAsNumber: true,
+                        })}
+                    />
+                    {errors.price && <ErrorMessage>{errors.price.message}</ErrorMessage>}
+                </div>
+
+                {/* Descuento */}
+                <div className="flex flex-col gap-2">
+                    <label className="font-medium" htmlFor="tax">Descuento (%)</label>
+                    <input
+                        id="tax"
+                        type="number"
+                        placeholder="Descuento del Ingrediente"
+                        className="w-full p-3 border-gray-300 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        {...register("tax", {
+                            required: "El descuento es obligatorio",
+                            min: { value: 0, message: "El descuento no puede ser menor a 0" },
+                            valueAsNumber: true,
+                        })}
+                    />
+                    {errors.tax && <ErrorMessage>{errors.tax.message}</ErrorMessage>}
+                </div>
+
+                {/* Categoría */}
+                <div className="flex flex-col gap-2">
+                    <label className="font-medium" htmlFor="idCategoryIngredient">Categoría</label>
+                    <select
+                        id="idCategoryIngredient"
+                        className="w-full p-3 border-gray-300 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        {...register("idCategoryIngredient", { required: "La subcategoría es obligatoria" })}
+                    >
+                        <option value="">Selecciona una categoría</option>
+                        {categories && categories.length > 0 ? (
+                            categories.map((idCategoryIngredient) => (
+                                <option key={idCategoryIngredient.id} value={idCategoryIngredient.id}>{idCategoryIngredient.name}</option>
+                            ))
+                        ) : (
+                            <option value="">No hay categorías por mostrar</option>
+                        )}
+                    </select>
+                    {errors.idCategoryIngredient && <ErrorMessage>{errors.idCategoryIngredient.message}</ErrorMessage>}
+                </div>
+
+                {/* Ingrediente Vendido */}
+                {selectedIngredient && (
+                    <div className="flex items-center gap-2">
+                        <input
+                            id="is_sold_out"
+                            type="checkbox"
+                            className="w-4 h-4 border-gray-300 rounded focus:ring-blue-400 cursor-pointer"
+                            {...register("is_sold_out")}
+                        />
+                        <label className="font-medium" htmlFor="is_sold_out">¿Ingrediente vendido?</label>
+                    </div>
+                )}
+
+
+                {/* Botones */}
+                <div className={`flex justify-center items-center gap-4 ${selectedIngredient ? 'flex-row' : 'flex-col'}`}>
+                    <Button type="primary" htmlType="submit" className="w-40">
+                        {selectedIngredient ? "Actualizar" : "Agregar"}
+                    </Button>
+                    {selectedIngredient && (
+                        <button
+                            type="button"
+                            className="w-40 bg-red-500 text-white hover:bg-red-600 rounded-md px-4 py-1.5"
+                            onClick={handleDeleteIngredient}
+                        >
+                            Eliminar
+                        </button>
+                    )}
+                </div>
+            </form>
+        </Modal>
+    )
+}
