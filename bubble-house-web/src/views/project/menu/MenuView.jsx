@@ -128,7 +128,7 @@ export default function MenuView() {
                   )}
                   <h3 className="font-bold text-lg">{product.name}</h3>
                   <p className="text-sm text-gray-600">{product.subcategory.name}</p>
-                  <p className="text-lg font-semibold">${product.price - (product.price * product.tax / 100)}</p>
+                  <p className="text-lg font-semibold">${product.price - (product.price * (product.tax / 100))}</p>
                   {product.tax > 0 && (
                     <p className="text-sm text-red-500 line-through">${product.price}</p>
                   )}

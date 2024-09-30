@@ -2,9 +2,8 @@ import { useEffect, useState } from 'react'
 import NavBarPrincipal from '@/layouts/NavBarPrincipal'
 import { FaPlus, FaCheckCircle, FaSearch } from 'react-icons/fa'
 import { GoAlertFill } from "react-icons/go";
-import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux';
-import { getIngredients } from '@/redux/thunks/ingredientThunks';
+import { getIngredients, getIngredientCategories } from '@/redux/thunks/ingredientThunks';
 import { ToastError } from "@/assets/js/toastify";
 import { removeAccents } from '@/utils/removeAccents';
 import FormIngredient from './FormIngredient';
@@ -16,12 +15,14 @@ export default function IngredientView() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredIngredients, setFilteredIngredients] = useState([]);
   const dispatch = useDispatch();
-  const { ingredients, errorRedux } = useSelector(state => state.ingredient);
+  const { ingredients, categories, errorRedux } = useSelector(state => state.ingredient);
+
+  
 
   const loadIngredients = () => {
     dispatch(getIngredients());
+    dispatch(getIngredientCategories());
   };
-
   useEffect(() => {
     loadIngredients();
   }, [dispatch]);
@@ -35,7 +36,8 @@ export default function IngredientView() {
   useEffect(() => {
     if (ingredients) {
       const filtered = ingredients.filter(ingredient =>
-        removeAccents(ingredient.name.toLowerCase()).includes(removeAccents(searchTerm.toLowerCase()))
+        removeAccents(ingredient.name.toLowerCase()).includes(removeAccents(searchTerm.toLowerCase())) ||
+        removeAccents(ingredient.ingredient_category.name.toLowerCase()).includes(removeAccents(searchTerm.toLowerCase()))
       );
       setFilteredIngredients(filtered);
     }
@@ -89,15 +91,15 @@ export default function IngredientView() {
                 className="bg-white border border-gray-200 rounded-lg shadow-lg p-4 cursor-pointer hover:shadow-2xl"
                 onClick={() => showModal(ingredient)}
               >
-                {/* <h2 className="text-xl font-semibold mb-2">Subcategoría: {ingredient.subcategory.name}</h2> */}
+                <h2 className="text-xl font-semibold mb-2">Categoría: {ingredient.ingredient_category.name}</h2>
                 <h3 className="text-xl mb-2">{ingredient.name}</h3>
 
-                <p className={`text-lg font-semibold px-4 py-2 rounded-full ${ingredient.is_sold_out
+                <p className={`text-lg font-semibold px-4 py-2 rounded-full ${ingredient.isSoldOut
                   ? 'bg-yellow-100 text-yellow-500 border border-yellow-600'
                   : 'bg-green-100 text-green-600 border border-green-600'
                   } flex items-center justify-center gap-2`}
                 >
-                  {ingredient.is_sold_out ? (
+                  {ingredient.isSoldOut ? (
                     <>
                       <GoAlertFill className="text-xl" /> Agotado
                     </>
@@ -120,7 +122,7 @@ export default function IngredientView() {
         onClose={handleCancel}
         refreshIngredients={loadIngredients}
         selectedIngredient={selectedIngredient}
-        //categories={categories}
+        categories={categories}
       />
     </>
   )

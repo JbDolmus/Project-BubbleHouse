@@ -145,8 +145,8 @@ const FormProduct = ({ isVisible, onClose, refreshProducts, selectedProduct, sub
                         {...register("name", {
                             required: "El nombre del producto es obligatorio",
                             pattern: {
-                                value: /^[a-zA-Z0-9@áéíóúüÁÉÍÓÚÜñÑ\s]+$/,
-                                message: "El nombre solo puede contener letras, números, '@' y espacios",
+                                value: /^[a-zA-Z0-9áéíóúüÁÉÍÓÚÜñÑ\s]+$/,
+                                message: "El nombre solo puede contener letras, números y espacios",
                             },
                         })}
                     />
