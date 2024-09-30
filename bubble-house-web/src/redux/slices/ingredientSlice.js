@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
     getIngredients,
     getIngredient,
+    getIngredientCategories,
     addIngredient,
     editIngredient,
     deleteIngredient,
@@ -12,32 +13,8 @@ const ingredientSlice = createSlice({
     name: "ingredient",
     initialState: {
         ingredient: null,
-        ingredients: [
-            {
-                id: 1,
-                name: "Prueba 1",
-                price: 1000,
-                tax: 10,
-                idCategoryIngredient: 1,
-                is_sold_out: false,
-            },
-            {
-                id: 2,
-                name: "Prueba 2",
-                price: 2000,
-                tax: 20,
-                idCategoryIngredient: 2,
-                is_sold_out: true,
-            },
-            {
-                id: 3,
-                name: "Prueba 3",
-                price: 3000,
-                tax: 30,
-                idCategoryIngredient: 3,
-                is_sold_out: false,
-            },
-        ],
+        ingredients: [],
+        categories: [],
         message: "",
         loading: false,
         errorRedux: null,
@@ -62,6 +39,26 @@ const ingredientSlice = createSlice({
         builder.addCase(getIngredients.rejected, (state) => {
             state.loading = false;
             state.errorRedux = "Ocurrió un error al cargar los ingredientes!";
+        });
+
+        // Cargar categorías de ingredientes
+        builder.addCase(getIngredientCategories.pending, (state) => {
+            state.loading = true;
+            state.errorRedux = null;
+            state.message = "";
+        });
+        builder.addCase(getIngredientCategories.fulfilled, (state, action) => {
+            if (action.payload) {
+                state.loading = false;
+                state.categories = action.payload;
+            } else {
+                state.errorRedux = "Ocurrió un error al cargar las categorías de ingredientes!";
+            }
+            state.loading = false;
+        });
+        builder.addCase(getIngredientCategories.rejected, (state) => {
+            state.loading = false;
+            state.errorRedux = "Ocurrió un error al cargar las categorías de ingredientes!";
         });
 
         //Obtener un ingrediente

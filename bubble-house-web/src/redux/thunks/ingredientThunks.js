@@ -30,6 +30,19 @@ export const getIngredients = createAsyncThunk("ingredient/getIngredients", asyn
     return response.json();
 });
 
+// Get Categories of ingredients
+export const getIngredientCategories = createAsyncThunk("ingredient/getIngredientCategories", async () => {
+    const response = await fetch(`${urlBase}/ingredient-category/`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+        },
+    });
+
+    return response.json();
+});
+
 // Get an ingredient
 export const getIngredient = createAsyncThunk("ingredient/getIngredient", async (data) => {
     const response = await fetch(`${urlBase}/ingredient/${data.id}`, {

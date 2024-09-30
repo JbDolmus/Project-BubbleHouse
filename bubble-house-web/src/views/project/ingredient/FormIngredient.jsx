@@ -23,9 +23,9 @@ export default function FormIngredient({ isVisible, onClose, refreshIngredients,
         defaultValues: {
             name: "",
             price: 0,
-            tax: 0,
+            discount: 0,
             idCategoryIngredient: "",
-            is_sold_out: false,
+            isSoldOut: false,
         },
     });
 
@@ -33,9 +33,9 @@ export default function FormIngredient({ isVisible, onClose, refreshIngredients,
         if (selectedIngredient) {
             setValue('name', selectedIngredient.name);
             setValue('price', selectedIngredient.price);
-            setValue('tax', selectedIngredient.tax);
-            setValue('idCategoryIngredient', selectedIngredient.idCategoryIngredient.id);
-            setValue('is_sold_out', selectedIngredient.is_sold_out);
+            setValue('discount', selectedIngredient.discount);
+            setValue('idCategoryIngredient', selectedIngredient.ingredient_category.id);
+            setValue('isSoldOut', selectedIngredient.isSoldOut);
         } else {
             reset();
         }
@@ -64,10 +64,10 @@ export default function FormIngredient({ isVisible, onClose, refreshIngredients,
             token,
             ingredient: {
                 name: formData.name,
-                idCategoryIngredient_id: formData.idCategoryIngredient,
+                ingredient_category: formData.idCategoryIngredient,
                 price: formData.price,
-                tax: formData.tax,
-                is_sold_out: formData.is_sold_out,
+                discount: formData.discount,
+                isSoldOut: formData.isSoldOut,
             }
         };
 
@@ -85,7 +85,6 @@ export default function FormIngredient({ isVisible, onClose, refreshIngredients,
             dispatch(addIngredient(ingredientData))
                 .unwrap()
                 .then(() => {
-
                     ToastSuccess("Ingrediente agregado con éxito");
                     onClose();
                     reset();
@@ -144,8 +143,8 @@ export default function FormIngredient({ isVisible, onClose, refreshIngredients,
                         {...register("name", {
                             required: "El nombre del ingrediente es obligatorio",
                             pattern: {
-                                value: /^[a-zA-Z0-9@áéíóúüÁÉÍÓÚÜñÑ\s]+$/,
-                                message: "El nombre solo puede contener letras, números, '@' y espacios",
+                                value: /^[a-zA-Z0-9áéíóúüÁÉÍÓÚÜñÑ\s]+$/,
+                                message: "El nombre solo puede contener letras, números y espacios",
                             },
                         })}
                     />
@@ -171,19 +170,19 @@ export default function FormIngredient({ isVisible, onClose, refreshIngredients,
 
                 {/* Descuento */}
                 <div className="flex flex-col gap-2">
-                    <label className="font-medium" htmlFor="tax">Descuento (%)</label>
+                    <label className="font-medium" htmlFor="discount">Descuento (%)</label>
                     <input
-                        id="tax"
+                        id="discount"
                         type="number"
                         placeholder="Descuento del Ingrediente"
                         className="w-full p-3 border-gray-300 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        {...register("tax", {
+                        {...register("discount", {
                             required: "El descuento es obligatorio",
                             min: { value: 0, message: "El descuento no puede ser menor a 0" },
                             valueAsNumber: true,
                         })}
                     />
-                    {errors.tax && <ErrorMessage>{errors.tax.message}</ErrorMessage>}
+                    {errors.discount && <ErrorMessage>{errors.discount.message}</ErrorMessage>}
                 </div>
 
                 {/* Categoría */}
@@ -210,12 +209,12 @@ export default function FormIngredient({ isVisible, onClose, refreshIngredients,
                 {selectedIngredient && (
                     <div className="flex items-center gap-2">
                         <input
-                            id="is_sold_out"
+                            id="isSoldOut"
                             type="checkbox"
                             className="w-4 h-4 border-gray-300 rounded focus:ring-blue-400 cursor-pointer"
-                            {...register("is_sold_out")}
+                            {...register("isSoldOut")}
                         />
-                        <label className="font-medium" htmlFor="is_sold_out">¿Ingrediente vendido?</label>
+                        <label className="font-medium" htmlFor="isSoldOut">¿Ingrediente vendido?</label>
                     </div>
                 )}
 
