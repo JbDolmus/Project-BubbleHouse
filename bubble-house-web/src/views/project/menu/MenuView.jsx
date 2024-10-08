@@ -8,6 +8,7 @@ import { SweetAlertQuestion } from '@/assets/js/sweetAlert';
 import { getProducts } from '@/redux/thunks/productThunks';
 import { getSubcategories } from '@/redux/thunks/subcategoryThunks';
 import { getCategories } from '@/redux/thunks/categoryThunks';
+import { set } from 'react-hook-form';
 
 const responsive = {
   superLargeDesktop: {
@@ -58,6 +59,24 @@ export default function MenuView() {
       ? products.filter(prod => prod.subcategory.category.id === selectedCategory.id)
       : products;
 
+      const handleCategoryClick = (category) => {
+        if (selectedCategory?.id === category.id) {
+          setSelectedCategory(null);
+          setSelectedSubcategory(null);
+        } else {
+          setSelectedCategory(category);
+          setSelectedSubcategory(null);
+        }
+      };
+
+      const handleSubCategoryClick = (subcategory) => {
+        if (selectedSubcategory?.id === subcategory.id) {
+          setSelectedSubcategory(null);
+        } else {
+          setSelectedSubcategory(subcategory);
+        }
+      };
+
   const handleAddToCart = (product) => {
     if (!product.is_sold_out) {
       SweetAlertQuestion(
@@ -81,7 +100,7 @@ export default function MenuView() {
               {categories.length > 0 && categories.map((category) => (
                 <div
                   key={category.id}
-                  onClick={() => { setSelectedCategory(category); setSelectedSubcategory(null) }}
+                  onClick={() => handleCategoryClick(category)}
                   className={`flex items-center justify-center p-3 mx-1 rounded-lg cursor-pointer transition-all duration-300 hover:bg-slate-100 ${selectedCategory?.id === category.id ? "text-white bg-black hover:bg-slate-800" : "text-gray-800"}`}
                 >
                   {category.name}
@@ -100,7 +119,7 @@ export default function MenuView() {
                   {filteredSubcategories.length > 0 && filteredSubcategories.map((subcategory) => (
                     <div
                       key={subcategory.id}
-                      onClick={() => setSelectedSubcategory(subcategory)}
+                      onClick={() => handleSubCategoryClick(subcategory)}
                       className={`flex items-center justify-center mx-1 p-3 my-1 rounded-lg cursor-pointer transition-all duration-300 hover:bg-slate-100 ${selectedSubcategory?.id === subcategory.id ? "text-white bg-black hover:bg-slate-800" : "text-gray-800"}`}
                     >
                       {subcategory.name}
