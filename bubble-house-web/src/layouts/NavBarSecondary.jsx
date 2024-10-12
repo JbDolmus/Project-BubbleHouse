@@ -11,7 +11,7 @@ export default function NavBarSecondary({ title }) {
   const icons = [
     { Component: ImBook, title: "Menú", path: "/menu" },
     { Component: ImMug, title: "Crear Bubble", path: "/bubble" },
-    { Component: BsCartPlusFill, title: "Carrito", path: "/car" },
+    { Component: BsCartPlusFill, title: "Carrito", path: "/cart" },
     { Component: BsBoxArrowRight, title: "Iniciar Sesión", path: "/" },
   ];
 

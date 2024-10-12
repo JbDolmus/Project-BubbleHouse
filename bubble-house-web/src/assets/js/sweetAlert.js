@@ -28,7 +28,7 @@ export const SweetAlertInfo = (message) => {
     icon: 'info',
     title: message,
     showConfirmButton: false,
-    timer: 1500
+    timer: 3000
   })
  }
 
