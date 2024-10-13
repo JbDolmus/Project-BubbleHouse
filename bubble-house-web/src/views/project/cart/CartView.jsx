@@ -155,14 +155,14 @@ export default function CartView() {
                     </td>
                     <td className="text-center px-4 py-2 space-x-2">
                       <button
-                        className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-1 px-2 rounded"
+                        className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-1 px-2 rounded transition transform active:translate-y-1"
                         onClick={() => handleDecrement(product.id)}
                       >
                         -
                       </button>
                       <span>{product.quantity}</span>
                       <button
-                        className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-1 px-2 rounded"
+                        className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-1 px-2 rounded transition transform active:translate-y-1"
                         onClick={() => handleIncrement(product.id)}
                       >
                         +
@@ -174,7 +174,7 @@ export default function CartView() {
                     <td className="text-center px-4 py-2">
                       <Tooltip title="Eliminar producto" placement="right">
                         <button
-                          className="text-red-500 hover:text-red-700"
+                          className="text-red-500 hover:text-red-700 hover:bg-red-100 rounded p-2 transition transform active:translate-y-1"
                           onClick={() => removeProduct(product)}
                         >
                           <FaTrash />
@@ -203,14 +203,14 @@ export default function CartView() {
           {/* Botones de acción */}
           <div className="mt-8 flex flex-col sm:flex-row sm:justify-between space-y-4 sm:space-y-0">
             <button
-              className="bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition transform active:translate-y-1"
               disabled={products.length === 0}
               onClick={() => makeOrder()}
             >
               Completar Pedido
             </button>
             <button
-              className="bg-red-500 text-white font-bold py-2 px-4 rounded hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-red-500 text-white font-bold py-2 px-4 rounded hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition transform active:translate-y-1"
               disabled={products.length === 0}
               onClick={() => cancelOrder()}
             >
