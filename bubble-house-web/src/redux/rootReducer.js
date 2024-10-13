@@ -8,12 +8,26 @@ import subcategorySlice from "./slices/subcategorySlice";
 import productSlice from "./slices/productSlice";
 import ingredientSlice from "./slices/ingredientSlice";
 import recipeSlice from "./slices/recipeSlice";
+import cartSlice from "./slices/cartSlice";
+import timerSlice from "./slices/timerSlice";
+import billSlice from "./slices/billSlice";
 
 const userPersistConfig = {
   key: "user",
   storage,
   whitelist: ["user", "userSession", "users", "token", "refresh"],
 };
+const cartPersistConfig = {
+  key: "cart",
+  storage,
+  whitelist: ["products"],
+};
+
+const timerPersistConfig = { 
+  key: "timer", 
+  storage,
+  whitelist: ["value", "isCounting"],
+}; 
 
 const rootReducer = combineReducers({
   user: persistReducer(userPersistConfig, userSlice),
@@ -23,6 +37,9 @@ const rootReducer = combineReducers({
   product: productSlice,
   ingredient: ingredientSlice,
   recipe: recipeSlice,
+  bill: billSlice,
+  cart: persistReducer(cartPersistConfig, cartSlice),
+  timer: persistReducer(timerPersistConfig, timerSlice),
 });
 
 export default rootReducer;

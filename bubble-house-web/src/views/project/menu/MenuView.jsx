@@ -8,7 +8,7 @@ import { SweetAlertQuestion } from '@/assets/js/sweetAlert';
 import { getProducts } from '@/redux/thunks/productThunks';
 import { getSubcategories } from '@/redux/thunks/subcategoryThunks';
 import { getCategories } from '@/redux/thunks/categoryThunks';
-import { set } from 'react-hook-form';
+import { addToCart } from '@/redux/slices/cartSlice';
 
 const responsive = {
   superLargeDesktop: {
@@ -83,7 +83,7 @@ export default function MenuView() {
         'Agregar al carrito',
         `¿Desea agregar el producto ${product.name} al carrito?`,
         () => {
-          console.log(`${product.name} agregado al carrito`);
+          dispatch(addToCart(product));
         },
         'Producto agregado al carrito!'
       );
