@@ -1,11 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import NavBarSecondary from '@/layouts/NavBarSecondary';
-import { FaTrash } from 'react-icons/fa';
-import { incrementQuantity, decrementQuantity, removeFromCart, clearCart } from '@/redux/slices/cartSlice';
-import {  resetTimer } from '@/redux/slices/timerSlice';
-import { SweetAlertQuestion, SweetAlertInfo } from '@/assets/js/sweetAlert';
 import { Tooltip } from 'antd';
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
+import NavBarSecondary from '@/layouts/NavBarSecondary';
+import { FaTrash, FaClock } from 'react-icons/fa';
+import { incrementQuantity, decrementQuantity, removeFromCart, clearCart } from '@/redux/slices/cartSlice';
+import { resetTimer } from '@/redux/slices/timerSlice';
+import { addBill, cleanAlertBill } from '@/redux/thunks/billThunks';
+import { SweetAlertQuestion, SweetAlertInfo, SweetAlertSuccess } from '@/assets/js/sweetAlert';
+
 
 export default function CartView() {
 
@@ -19,13 +23,13 @@ export default function CartView() {
     return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
   };
 
-  
+
   useEffect(() => {
-    if (timer >= 120) {
+    if (timer >= 1800) {
       dispatch(clearCart());
       dispatch(resetTimer());
     }
-    if (timer === 60) {
+    if (timer === 1740) {
       SweetAlertInfo('Te queda un minuto para completar tu pedido.');
     }
   }, [timer, dispatch]);
@@ -61,17 +65,36 @@ export default function CartView() {
   };
 
   const makeOrder = () => {
+    const invoiceProducts = products.map(product => {
+      const subtotal = parseFloat(product.price) * product.quantity;
+      const discount = subtotal * (product.tax / 100);
+      const total = subtotal - discount;
+
+      return {
+        product: product.id,
+        amount: product.quantity,
+        subtotal: subtotal.toFixed(2),
+        discount: discount.toFixed(2),
+        total: total.toFixed(2)
+      };
+    });
+
     SweetAlertQuestion(
       'Realizar pedido',
       '¿Desea realizar el pedido?',
       () => {
-        dispatch(clearCart());
-        dispatch(resetTimer());
+        dispatch(addBill({ invoiceProducts }))
+          .unwrap()
+          .then(() => {
+            dispatch(clearCart());
+            dispatch(resetTimer());
+            dispatch(cleanAlertBill());
+          });
       },
-      'Pedido realizado!'
-    )
-
+      'Gracias por su compra! Dentro de poco se efectuará el cobro.'
+    );
   };
+
 
   const cancelOrder = () => {
     SweetAlertQuestion(
@@ -85,6 +108,7 @@ export default function CartView() {
     )
 
   };
+  const progressPercentage = ((timer / 1800) * 100);
 
   return (
     <>
@@ -93,10 +117,19 @@ export default function CartView() {
         <div className="w-full max-w-4xl bg-white rounded-lg p-6 shadow-lg relative">
 
           {isCounting && (
-            <div
-              className={`absolute top-16 right-6 bg-gray-800 text-white py-2 px-4 rounded-lg transition duration-500 ${timer >= 60 ? 'bg-red-600 animate-pulse' : 'bg-gray-800'}`}
-            >
-              Tiempo restante: {formatTime(120 - timer)}
+            <div className="absolute top-16 right-6 flex items-center">
+              <div className="relative w-12 h-12">
+                <CircularProgressbar
+                  value={progressPercentage}
+                  styles={buildStyles({
+                    textColor: 'transparent',
+                    pathColor: timer >= 1740 ? '#f56565' : '#4a5568',
+                    trailColor: '#e2e8f0',
+                  })}
+                />
+                <FaClock className="absolute inset-0 m-auto text-gray-700 text-xl" />
+              </div>
+              <span className="ml-4 text-xl text-gray-700">{formatTime(1800 - timer)}</span>
             </div>
           )}
 

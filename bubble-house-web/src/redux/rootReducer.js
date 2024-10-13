@@ -10,6 +10,7 @@ import ingredientSlice from "./slices/ingredientSlice";
 import recipeSlice from "./slices/recipeSlice";
 import cartSlice from "./slices/cartSlice";
 import timerSlice from "./slices/timerSlice";
+import billSlice from "./slices/billSlice";
 
 const userPersistConfig = {
   key: "user",
@@ -36,6 +37,7 @@ const rootReducer = combineReducers({
   product: productSlice,
   ingredient: ingredientSlice,
   recipe: recipeSlice,
+  bill: billSlice,
   cart: persistReducer(cartPersistConfig, cartSlice),
   timer: persistReducer(timerPersistConfig, timerSlice),
 });

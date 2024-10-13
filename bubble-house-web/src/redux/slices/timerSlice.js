@@ -32,7 +32,7 @@ export const runTimer = () => (dispatch, getState) => {
         const interval = setInterval(() => {
             dispatch(incrementTimer());
 
-            if (timer.value >= 120) {
+            if (timer.value >= 1800) {
                 dispatch(resetTimer());
                 clearInterval(interval);
             }
