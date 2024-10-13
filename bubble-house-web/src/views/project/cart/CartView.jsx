@@ -57,7 +57,10 @@ export default function CartView() {
       'Quitar del carrito',
       `¿Desea quitar el producto ${product.name} del carrito?`,
       () => {
-        dispatch(removeFromCart(product.id));
+        dispatch(removeFromCart(product.id))
+        if (products.length <= 1) {
+          dispatch(resetTimer());
+        }
       },
       'Producto eliminado del carrito!'
 
