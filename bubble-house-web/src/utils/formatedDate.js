@@ -1,5 +1,5 @@
 export function formatDate(date) {
-    
+
     const dateObj = new Date(date);
 
     const day = String(dateObj.getDate()).padStart(2, '0');
@@ -19,4 +19,14 @@ export function formatDate(date) {
     const formattedTime = `${hours}:${minutes} ${ampm}`;
 
     return `${formattedDate} ${formattedTime}`;
+}
+
+export function formatDateOnly(date) {
+    const dateObj = new Date(date);
+
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const year = dateObj.getFullYear();
+
+    return `${day}/${month}/${year}`;
 }

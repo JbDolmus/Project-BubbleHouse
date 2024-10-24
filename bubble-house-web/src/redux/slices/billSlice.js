@@ -23,7 +23,121 @@ const billSlice = createSlice({
         loading: false,
         errorRedux: null,
     },
-    reducers: {},
+    reducers: {
+        incrementQuantity: (state, action) => {
+            const { billId, productId } = action.payload;
+
+            const bill = state.bills.find((bill) => bill.id === billId);
+
+            if (bill) {
+                const invoiceProduct = bill.invoiceProducts.find((product) => product.id === productId);
+
+                if (invoiceProduct) {
+                    invoiceProduct.amount += 1;
+
+                    const price = parseFloat(invoiceProduct.product.price);
+                    invoiceProduct.subtotal = (price * invoiceProduct.amount).toFixed(2);
+                    invoiceProduct.discount = (invoiceProduct.subtotal * (invoiceProduct.product.tax / 100)).toFixed(2);
+                    invoiceProduct.total = (parseFloat(invoiceProduct.subtotal) - parseFloat(invoiceProduct.discount)).toFixed(2);
+
+                    bill.subtotal = bill.invoiceProducts.reduce((sum, p) => sum + parseFloat(p.subtotal), 0).toFixed(2);
+                    bill.discount = bill.invoiceProducts.reduce((sum, p) => sum + parseFloat(p.discount), 0).toFixed(2);
+                    bill.total = (bill.subtotal - parseFloat(bill.discount)).toFixed(2);
+                }
+            }
+        },
+
+        decrementQuantity: (state, action) => {
+            const { billId, productId } = action.payload;
+
+            const bill = state.bills.find((bill) => bill.id === billId);
+
+            if (bill) {
+                const invoiceProduct = bill.invoiceProducts.find((product) => product.id === productId);
+
+                if (invoiceProduct && invoiceProduct.amount > 1) {
+                    invoiceProduct.amount -= 1;
+
+                    const price = parseFloat(invoiceProduct.product.price);
+                    invoiceProduct.subtotal = (price * invoiceProduct.amount).toFixed(2);
+                    invoiceProduct.discount = (invoiceProduct.subtotal * (invoiceProduct.product.tax / 100)).toFixed(2);
+                    invoiceProduct.total = (parseFloat(invoiceProduct.subtotal) - parseFloat(invoiceProduct.discount)).toFixed(2);
+
+                    bill.subtotal = bill.invoiceProducts.reduce((sum, p) => sum + parseFloat(p.subtotal), 0).toFixed(2);
+                    bill.discount = bill.invoiceProducts.reduce((sum, p) => sum + parseFloat(p.discount), 0).toFixed(2);
+                    bill.total = (bill.subtotal - parseFloat(bill.discount)).toFixed(2);
+                }
+            }
+        },
+        incrementTax: (state, action) => {
+            const { billId, productId } = action.payload;
+
+            const bill = state.bills.find((bill) => bill.id === billId);
+
+            if (bill) {
+                const invoiceProduct = bill.invoiceProducts.find((product) => product.id === productId);
+
+                if (invoiceProduct && invoiceProduct.product.tax < 100) {
+                    invoiceProduct.product.tax += 1;
+
+                    const price = parseFloat(invoiceProduct.product.price);
+                    invoiceProduct.subtotal = (price * invoiceProduct.amount).toFixed(2);
+                    invoiceProduct.discount = (invoiceProduct.subtotal * (invoiceProduct.product.tax / 100)).toFixed(2);
+                    invoiceProduct.total = (parseFloat(invoiceProduct.subtotal) - parseFloat(invoiceProduct.discount)).toFixed(2);
+
+                    bill.subtotal = bill.invoiceProducts.reduce((sum, p) => sum + parseFloat(p.subtotal), 0).toFixed(2);
+                    bill.discount = bill.invoiceProducts.reduce((sum, p) => sum + parseFloat(p.discount), 0).toFixed(2);
+                    bill.total = (bill.subtotal - parseFloat(bill.discount)).toFixed(2);
+                }
+            }
+        },
+
+        decrementTax: (state, action) => {
+            const { billId, productId } = action.payload;
+
+            const bill = state.bills.find((bill) => bill.id === billId);
+
+            if (bill) {
+                const invoiceProduct = bill.invoiceProducts.find((product) => product.id === productId);
+
+                if (invoiceProduct && invoiceProduct.product.tax > 0) {
+                    invoiceProduct.product.tax -= 1;
+
+                    const price = parseFloat(invoiceProduct.product.price);
+                    invoiceProduct.subtotal = (price * invoiceProduct.amount).toFixed(2);
+                    invoiceProduct.discount = (invoiceProduct.subtotal * (invoiceProduct.product.tax / 100)).toFixed(2);
+                    invoiceProduct.total = (parseFloat(invoiceProduct.subtotal) - parseFloat(invoiceProduct.discount)).toFixed(2);
+
+                    bill.subtotal = bill.invoiceProducts.reduce((sum, p) => sum + parseFloat(p.subtotal), 0).toFixed(2);
+                    bill.discount = bill.invoiceProducts.reduce((sum, p) => sum + parseFloat(p.discount), 0).toFixed(2);
+                    bill.total = (bill.subtotal - parseFloat(bill.discount)).toFixed(2);
+                }
+            }
+        },
+
+        removeProductFromBill: (state, action) => {
+            const { billId, productId } = action.payload;
+
+            const bill = state.bills.find((bill) => bill.id === billId);
+
+            if (bill) {
+                bill.invoiceProducts = bill.invoiceProducts.filter(
+                    (product) => product.id !== productId
+                );
+
+                bill.subtotal = bill.invoiceProducts.reduce(
+                    (sum, p) => sum + parseFloat(p.subtotal),
+                    0
+                ).toFixed(2);
+                bill.discount = bill.invoiceProducts.reduce(
+                    (sum, p) => sum + parseFloat(p.discount),
+                    0
+                ).toFixed(2);
+                bill.total = (bill.subtotal - parseFloat(bill.discount)).toFixed(2);
+            }
+        },
+
+    },
     extraReducers: (builder) => {
         // Cargar facturas
         builder.addCase(getBills.pending, (state) => {
@@ -32,9 +146,10 @@ const billSlice = createSlice({
             state.message = "";
         });
         builder.addCase(getBills.fulfilled, (state, action) => {
+            //console.log(action.payload);
             if (action.payload) {
                 state.loading = false;
-                state.ingredients = action.payload.results;
+                state.bills = action.payload;
             } else {
                 state.errorRedux = "Ocurrió un error al cargar los facturas!";
             }
@@ -92,7 +207,7 @@ const billSlice = createSlice({
         });
         builder.addCase(getBill.fulfilled, (state, action) => {
             if (action.payload) {
-                state.ingredient = action.payload.categoria;
+                state.bill = action.payload.categoria;
             } else {
                 state.errorRedux = "Ocurrió un error al cargar la factura!";
             }
@@ -220,5 +335,7 @@ const billSlice = createSlice({
 
     },
 });
+
+export const { incrementQuantity, decrementQuantity, incrementTax, decrementTax, removeProductFromBill } = billSlice.actions;
 
 export default billSlice.reducer;
