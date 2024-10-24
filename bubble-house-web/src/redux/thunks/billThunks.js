@@ -17,11 +17,12 @@ export const addBill = createAsyncThunk("bill/addBill", async (data) => {
 });
 
 // Get all bills
-export const getBills = createAsyncThunk("bill/getBills", async () => {
+export const getBills = createAsyncThunk("bill/getBills", async (token) => {
     const response = await fetch(`${urlBase}/bill/`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
             Accept: "application/json",
         },
     });
@@ -75,7 +76,7 @@ export const editBill = createAsyncThunk("bill/editBill", async (data) => {
             Authorization: `Bearer ${data.token}`,
             Accept: "application/json",
         },
-        body: JSON.stringify(data.bill),
+        body: JSON.stringify({invoiceProducts: data.invoiceProducts}),
     });
     const jsonResponse = await response.json();
     return jsonResponse;
@@ -105,7 +106,7 @@ export const editBillPaid = createAsyncThunk("bill/editBillPaid", async (data) =
             Authorization: `Bearer ${data.token}`,
             Accept: "application/json",
         },
-        body: JSON.stringify(data.bill),
+        body: JSON.stringify({isPaid: data.isPaid}),
     });
     const jsonResponse = await response.json();
     return jsonResponse;
@@ -132,4 +133,4 @@ export const deleteBill = createAsyncThunk("bill/deleteBill", async (data) => {
 
 export const cleanAlertBill = createAsyncThunk("bill/cleanAlertBill", () => {
     return {};
-  });
+});

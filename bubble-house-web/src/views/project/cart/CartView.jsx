@@ -8,7 +8,7 @@ import { FaTrash, FaClock } from 'react-icons/fa';
 import { incrementQuantity, decrementQuantity, removeFromCart, clearCart } from '@/redux/slices/cartSlice';
 import { resetTimer } from '@/redux/slices/timerSlice';
 import { addBill, cleanAlertBill } from '@/redux/thunks/billThunks';
-import { SweetAlertQuestion, SweetAlertInfo, SweetAlertSuccess } from '@/assets/js/sweetAlert';
+import { SweetAlertQuestion, SweetAlertInfo } from '@/assets/js/sweetAlert';
 
 
 export default function CartView() {
@@ -22,7 +22,6 @@ export default function CartView() {
     const remainingSeconds = seconds % 60;
     return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
   };
-
 
   useEffect(() => {
     if (timer >= 1800) {
@@ -63,7 +62,6 @@ export default function CartView() {
         }
       },
       'Producto eliminado del carrito!'
-
     );
   };
 

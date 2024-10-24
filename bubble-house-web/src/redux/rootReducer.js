@@ -27,7 +27,12 @@ const timerPersistConfig = {
   key: "timer", 
   storage,
   whitelist: ["value", "isCounting"],
-}; 
+};
+const billPersistConfig = {
+  key: "bill",
+  storage,
+  whitelist: ["bill", "bills", "billsCompleted", "billsPaid"],
+};
 
 const rootReducer = combineReducers({
   user: persistReducer(userPersistConfig, userSlice),
@@ -37,7 +42,7 @@ const rootReducer = combineReducers({
   product: productSlice,
   ingredient: ingredientSlice,
   recipe: recipeSlice,
-  bill: billSlice,
+  bill: persistReducer(billPersistConfig, billSlice),
   cart: persistReducer(cartPersistConfig, cartSlice),
   timer: persistReducer(timerPersistConfig, timerSlice),
 });
