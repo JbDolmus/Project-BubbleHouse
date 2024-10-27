@@ -190,12 +190,12 @@ export default function CartView() {
 
           {/* Resumen del pedido */}
           <div className="mt-6">
-            <div className="flex justify-between items-center">
-              <div className="text-4xl font-light text-gray-700">
+            <div className="flex justify-start items-center">
+              <div className="text-2xl font-bold text-gray-500">
                 Total:
               </div>
               {/* Calcular el total */}
-              <div className="text-4xl font-bold text-gray-800">
+              <div className="text-2xl font-light text-gray-600 mx-1">
                 ₡{totalOrder}
               </div>
             </div>
@@ -208,7 +208,7 @@ export default function CartView() {
               disabled={products.length === 0}
               onClick={() => makeOrder()}
             >
-              Completar Pedido
+              Realizar Pedido
             </button>
             <button
               className="bg-red-500 text-white font-bold py-2 px-4 rounded hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition transform active:translate-y-1"
