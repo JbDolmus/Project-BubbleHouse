@@ -10,7 +10,6 @@ import { Tooltip } from "antd";
 import { removeAccents } from "@/utils/removeAccents";
 import Spinner from "@/components/Spinner";
 
-
 export default function CategoryProduct() {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(null);
