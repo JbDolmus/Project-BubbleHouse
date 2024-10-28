@@ -89,12 +89,20 @@ export default function LoginView() {
           {errors.password && <ErrorMessage>{errors.password.message}</ErrorMessage>}
         </div>
 
-        <input
+        <button
           type="submit"
-          value={loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
-          className={`bg-fuchsia-600 hover:bg-fuchsia-700 w-full p-3 text-white font-black text-xl cursor-pointer rounded-md ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+          className={`flex items-center justify-center gap-2 bg-fuchsia-600 hover:bg-fuchsia-700 w-full p-3 text-white font-black text-xl rounded-md ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
           disabled={loading}
-        />
+        >
+          {loading ? (
+            <>
+              <span className="animate-spin rounded-full border-2 border-t-2 border-t-transparent border-white w-5 h-5"></span>
+              Iniciando sesión...
+            </>
+          ) : (
+            'Iniciar Sesión'
+          )}
+        </button>
 
       </form>
 
