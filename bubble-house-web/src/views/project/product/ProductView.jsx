@@ -20,8 +20,8 @@ export default function ProductView() {
   const { products, errorRedux } = useSelector(state => state.product);
   const { subcategories } = useSelector(state => state.subcategory);
   const loadProducts = () => {
-      dispatch(getProducts());
-      dispatch(getSubcategories());
+    dispatch(getProducts());
+    dispatch(getSubcategories());
   };
 
   useEffect(() => {
@@ -125,7 +125,20 @@ export default function ProductView() {
               </div>
             ))
           ) : (
-            <p className="text-white text-xl">No hay productos por mostrar</p>
+            <div className="col-span-3 w-full text-center mt-10 p-6 max-w-lg mx-auto bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 rounded-lg shadow-lg">
+              <p className="text-white text-xl font-bold mb-2 animate-pulse">
+                No se encontraron productos que coincidan con tu búsqueda
+              </p>
+              <p className="text-lg text-gray-200">
+                Intenta con un término diferente o{' '}
+                <span
+                  className="text-blue-300 underline font-semibold cursor-pointer transition-colors duration-200 hover:text-blue-400"
+                  onClick={() => setSearchTerm('')}
+                >
+                  borra el filtro
+                </span>
+              </p>
+            </div>
           )}
         </div>
       </div>

@@ -135,7 +135,7 @@ export default function RecipeView() {
               <div className="flex flex-col items-center justify-center h-64 col-span-full bg-red-100 border border-red-300 rounded-lg shadow-lg">
                 <AiOutlineFrown className="text-red-500 text-4xl mb-2" />
                 <p className="text-red-600 text-lg font-bold text-center">
-                  No hay productos disponibles.
+                  No hay recetas disponibles.
                 </p>
                 <p className="text-gray-500 text-sm text-center">
                   Vuelve más tarde o explora otras categorías.

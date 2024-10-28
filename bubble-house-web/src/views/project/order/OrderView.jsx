@@ -193,8 +193,9 @@ export default function OrderView() {
 
           <>
             {bills.length === 0 ? (
-              <div className="flex justify-center w-full max-w-4xl bg-white rounded-lg p-6 shadow-lg">
-                <h1 className="text-xl font-bold text-gray-400 my-4">No hay pedidos por cobrar</h1>
+              <div className="mt-7 flex flex-col justify-center items-center w-full max-w-4xl bg-gradient-to-r from-blue-100 via-purple-100 to-pink-100 rounded-lg p-8 shadow-lg animate-bounce">
+                <h1 className="text-2xl font-semibold text-gray-500 mb-4">📦</h1>
+                <h1 className="text-2xl text-center font-bold text-gray-700">No hay pedidos por cobrar</h1>
               </div>
             ) :
               <>
@@ -351,8 +352,9 @@ export default function OrderView() {
           </>
           :
           billsPaid.length === 0 ? (
-            <div className="flex justify-center w-full max-w-4xl bg-white rounded-lg p-6 shadow-lg">
-              <h1 className="text-xl font-bold text-gray-400 my-4">No hay pedidos por preparar</h1>
+            <div className="mt-7 flex flex-col justify-center items-center w-full max-w-4xl bg-gradient-to-r from-green-100 via-blue-100 to-yellow-100 rounded-lg p-8 shadow-lg animate-bounce">
+              <h1 className="text-2xl font-semibold text-gray-500 mb-4">⏳</h1>
+              <h1 className="text-2xl text-center font-bold text-gray-700">No hay pedidos por preparar</h1>
             </div>
           ) : (
             billsPaid.map((bill) =>
