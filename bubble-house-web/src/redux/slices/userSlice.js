@@ -98,7 +98,7 @@ const userSlice = createSlice({
     });
     builder.addCase(deleteUser.fulfilled, (state, action) => {
       if (action.payload.success) {
-        state.message = "";
+        state.message = "Usuario eliminado exitosamente!";
         state.loading = false;
       } else {
         state.errorRedux = "Ocurrió un error al eliminar el usuario!";
@@ -172,9 +172,14 @@ const userSlice = createSlice({
       state.errorRedux = null;
     });
     builder.addCase(addUser.fulfilled, (state, action) => {
+      if (action.payload.state === true) {
+        state.loading = false;
+        state.message = "Usuario agregado con éxito!";
+      } else {
+        state.loading = false;
+        state.errorRedux = "Ocurrio un error al agregar el usuario!";
+      }
 
-      state.loading = false;
-      state.message = "Usuario agregado con éxito!";
     });
     builder.addCase(addUser.rejected, (state) => {
 
@@ -188,8 +193,14 @@ const userSlice = createSlice({
       state.errorRedux = null;
     });
     builder.addCase(editUserwithoutPassword.fulfilled, (state, action) => {
-      state.loading = false;
+
+      if(action.payload.email && action.payload.username) {
+        state.loading = false;
       state.message = "Usuario actualizado con éxito!";
+      } else {
+        state.loading = false;
+        state.errorRedux = "Ocurrio un error al actualizar el usuario!";
+      }
     });
     builder.addCase(editUserwithoutPassword.rejected, (state) => {
       state.loading = false;
@@ -202,16 +213,16 @@ const userSlice = createSlice({
       state.errorRedux = null;
     });
     builder.addCase(getUsers.fulfilled, (state, action) => {
-      if(action.payload.results){
+      if (action.payload.results) {
         state.loading = false;
         state.users = action.payload.results;
-        state.message = "Usuarios obtenidos exitosamente!";
-      }else{
+        state.message = "";
+      } else {
         state.loading = false;
         state.users = [];
-        state.message = "No hay usuarios registrados!";
+        state.errorRedux = "Ocurrió un error al obtener los usuarios!";
       }
-     
+
     });
     builder.addCase(getUsers.rejected, (state) => {
       state.loading = false;

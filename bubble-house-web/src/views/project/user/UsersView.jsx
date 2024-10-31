@@ -3,7 +3,7 @@ import { FaPlus, FaSearch } from "react-icons/fa";
 import NavBarPrincipal from '@/layouts/NavBarPrincipal';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUsers, cleanAlert } from '@/redux/thunks/userThunks';
-import { ToastError } from '@/assets/js/toastify.js';
+import { ToastError, ToastSuccess } from '@/assets/js/toastify.js';
 import FormUserView from './FormUserView';
 import { getRolls, cleanAlertRoll } from '@/redux/thunks/rolThunks';
 import { removeAccents } from "@/utils/removeAccents";
@@ -33,7 +33,8 @@ export default function UsersView() {
 
   useEffect(() => {
 
-    if (message === "Usuarios obtenidos exitosamente!") {
+    if (message) {
+      ToastSuccess(message);
       dispatch(cleanAlert());
     }
 
@@ -101,7 +102,7 @@ export default function UsersView() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 w-full max-w-4xl">
             {filteredUsers && filteredUsers.length > 0 ? (
               filteredUsers.map(user => (
-                user.id !== currentUser.id &&
+               currentUser && (user.id !== currentUser.id) &&
                 <div
                   key={user.id}
                   className="bg-white border border-gray-200 rounded-lg shadow-lg p-4 cursor-pointer hover:shadow-2xl"

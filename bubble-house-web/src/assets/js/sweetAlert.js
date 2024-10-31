@@ -7,7 +7,7 @@ export const SweetAlertSuccess = (message) => {
     icon: 'success',
     title: message,
     showConfirmButton: false,
-    timer: 3000
+    timer: 1500
   })
  };
 

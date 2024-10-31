@@ -93,7 +93,6 @@ export default function FormUserView({ isVisible, onClose, refreshUsers, selecte
             dispatch(editUserwithoutPassword(userData))
                 .unwrap()
                 .then(() => {
-                    ToastSuccess("Usuario actualizado con éxito");
                     onClose();
                     reset();
                     refreshUsers();
@@ -104,8 +103,6 @@ export default function FormUserView({ isVisible, onClose, refreshUsers, selecte
             dispatch(addUser(userData))
                 .unwrap()
                 .then(() => {
-
-                    ToastSuccess("Usuario agregado con éxito");
                     onClose();
                     reset();
                     refreshUsers();
@@ -124,7 +121,6 @@ export default function FormUserView({ isVisible, onClose, refreshUsers, selecte
             dispatch(deleteUser({ id: selectedUser.id, token }))
                 .unwrap()
                 .then(() => {
-                    ToastSuccess("Usuario eliminado con éxito");
                     setTimeout(() => {
                         onClose();
                         reset();
@@ -159,7 +155,7 @@ export default function FormUserView({ isVisible, onClose, refreshUsers, selecte
             width={500}
         >
             <form onSubmit={handleSubmit(handleAddOrEditUser)} className="space-y-4">
-                {/* Nombre */}
+                {/* Nombre de usuario */}
                 <div className="flex flex-col gap-2">
                     <label className="font-medium" htmlFor="userName">Nombre de usuario</label>
                     <input
@@ -170,8 +166,8 @@ export default function FormUserView({ isVisible, onClose, refreshUsers, selecte
                         {...register("userName", {
                             required: "El nombre es obligatorio",
                             pattern: {
-                                value: /^[a-zA-Z0-9@áéíóúüÁÉÍÓÚÜñÑ\s]+$/,
-                                message: "El nombre solo puede contener letras, números, '@' y espacios",
+                                value: /^[a-zA-Z0-9@áéíóúüÁÉÍÓÚÜñÑ]+$/,
+                                message: "El nombre solo puede contener letras, números y '@', sin espacios",
                             },
                         })}
                     />
