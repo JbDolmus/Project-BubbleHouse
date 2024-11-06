@@ -2,9 +2,9 @@ import { Button, Modal } from 'antd';
 import { useForm } from 'react-hook-form';
 import ErrorMessage from '@/components/ErrorMessage';
 import { useDispatch, useSelector } from 'react-redux';
-import { cleanAlertCategory, addCategory, editCategory, deleteCategory } from '@/redux/thunks/categoryThunks';
+import { addCategory, editCategory, deleteCategory } from '@/redux/thunks/categoryThunks';
 import { useEffect } from 'react';
-import { ToastError, ToastSuccess } from '@/assets/js/toastify';
+import { ToastError } from '@/assets/js/toastify';
 import { SweetAlertEliminar } from '@/assets/js/sweetAlert';
 
 export default function FormCategoryProducto({ isVisible, onClose, refreshCategories, selectedCategory }) {
@@ -36,7 +36,7 @@ export default function FormCategoryProducto({ isVisible, onClose, refreshCatego
     const isDuplicateCategory = (formData) => {
         const isDuplicateName = categories.some(category => category.name === formData.name && category.id !== selectedCategory?.id);
         if (isDuplicateName) {
-            ToastError("Esa categoría ya existe.");
+            ToastError("¡Esa categoría ya existe!");
             return true;
         }
 
@@ -63,22 +63,17 @@ export default function FormCategoryProducto({ isVisible, onClose, refreshCatego
             dispatch(editCategory(categoryData))
                 .unwrap()
                 .then(() => {
-                    ToastSuccess("Categoría actualizada con éxito");
                     onClose();
                     reset();
                     refreshCategories();
-                    dispatch(cleanAlertCategory());
                 })
         } else {
             dispatch(addCategory(categoryData))
                 .unwrap()
                 .then(() => {
-
-                    ToastSuccess("Categoría agregada con éxito");
                     onClose();
                     reset();
                     refreshCategories();
-                    dispatch(cleanAlertCategory());
                 })
         }
     }
@@ -88,17 +83,14 @@ export default function FormCategoryProducto({ isVisible, onClose, refreshCatego
             ToastError("Token no disponible");
             return;
         }
-
         SweetAlertEliminar("¿Estás seguro de que deseas eliminar esta categoría?", () => {
             dispatch(deleteCategory({ id: selectedCategory.id, token }))
                 .unwrap()
                 .then(() => {
-                    ToastSuccess("Categoría eliminada con éxito");
                     setTimeout(() => {
                         onClose();
                         reset();
                         refreshCategories();
-                        dispatch(cleanAlertCategory());
                     }, 0);
                 })
         });

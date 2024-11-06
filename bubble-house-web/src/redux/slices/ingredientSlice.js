@@ -87,11 +87,11 @@ const ingredientSlice = createSlice({
             state.message = "";
         });
         builder.addCase(addIngredient.fulfilled, (state, action) => {
-            if (action.payload) {
+            if (action.payload.id) {
                 state.loading = false;
                 state.message = "Ingrediente agregado con éxito!";
             } else {
-                state.errorRedux = "Ocurrió un error al agregar el ingrediente!";
+                state.errorRedux = "¡Ese ingrediente ya existe!";
             }
             state.loading = false;
         });
@@ -107,11 +107,11 @@ const ingredientSlice = createSlice({
             state.message = "";
         });
         builder.addCase(editIngredient.fulfilled, (state, action) => {
-            if (action.payload) {
+            if (action.payload.id) {
                 state.loading = false;
                 state.message = "Ingrediente actualizado con éxito!";
             } else {
-                state.errorRedux = "Ocurrió un error al editar el ingrediente!";
+                state.errorRedux = "¡Ese ingrediente ya existe!";
             }
             state.loading = false;
         });

@@ -5,14 +5,13 @@ import ErrorMessage from '@/components/ErrorMessage';
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { Tooltip } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { addUser, editUserwithoutPassword, deleteUser, cleanAlert } from '@/redux/thunks/userThunks';
-import { ToastSuccess, ToastError } from '@/assets/js/toastify.js';
+import { addUser, editUserwithoutPassword, deleteUser } from '@/redux/thunks/userThunks';
+import { ToastError } from '@/assets/js/toastify.js';
 import { SweetAlertEliminar } from '@/assets/js/sweetAlert.js';
 
 export default function FormUserView({ isVisible, onClose, refreshUsers, selectedUser, rolls }) {
     const dispatch = useDispatch();
     const { token, users } = useSelector(state => state.user);
-
 
     const {
         register,
@@ -96,7 +95,6 @@ export default function FormUserView({ isVisible, onClose, refreshUsers, selecte
                     onClose();
                     reset();
                     refreshUsers();
-                    dispatch(cleanAlert());
                 })
         } else {
             userData.user.password = formData.newPassword;
@@ -106,7 +104,6 @@ export default function FormUserView({ isVisible, onClose, refreshUsers, selecte
                     onClose();
                     reset();
                     refreshUsers();
-                    dispatch(cleanAlert());
                 })
         }
     };
@@ -125,7 +122,6 @@ export default function FormUserView({ isVisible, onClose, refreshUsers, selecte
                         onClose();
                         reset();
                         refreshUsers();
-                        dispatch(cleanAlert());
                     }, 0);
                 })
         });

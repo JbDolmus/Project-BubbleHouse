@@ -1,9 +1,9 @@
 import { useDispatch, useSelector } from "react-redux";
-import { addSubcategory, editSubcategory, deleteSubcategory, cleanAlertSubcategory } from '@/redux/thunks/subcategoryThunks';
+import { addSubcategory, editSubcategory, deleteSubcategory } from '@/redux/thunks/subcategoryThunks';
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { Button, Modal } from "antd";
-import { ToastSuccess, ToastError } from "@/assets/js/toastify";
+import { ToastError } from "@/assets/js/toastify";
 import { SweetAlertEliminar } from "@/assets/js/sweetAlert";
 import ErrorMessage from '@/components/ErrorMessage';
 
@@ -39,7 +39,7 @@ export default function FormSubcategoryProduct({ isVisible, onClose, refreshSubc
   const isDuplicateSubcategory = (formData) => {
     const isDuplicateName = subcategories.some(subcategory => subcategory.name === formData.name && subcategory.id !== selectedSubcategory?.id);
     if (isDuplicateName) {
-      ToastError("Esa subcategoría ya existe.");
+      ToastError("¡Esa subcategoría ya existe!");
       return true;
     }
 
@@ -68,22 +68,17 @@ export default function FormSubcategoryProduct({ isVisible, onClose, refreshSubc
       dispatch(editSubcategory(subcategoryData))
         .unwrap()
         .then(() => {
-          ToastSuccess("Subcategoría actualizada con éxito");
           onClose();
           reset();
           refreshSubcategories();
-          dispatch(cleanAlertSubcategory());
         })
     } else {
       dispatch(addSubcategory(subcategoryData))
         .unwrap()
         .then(() => {
-
-          ToastSuccess("Subcategoría agregada con éxito");
           onClose();
           reset();
           refreshSubcategories();
-          dispatch(cleanAlertSubcategory());
         })
     }
   }
@@ -98,12 +93,10 @@ export default function FormSubcategoryProduct({ isVisible, onClose, refreshSubc
       dispatch(deleteSubcategory({ id: selectedSubcategory.id, token }))
         .unwrap()
         .then(() => {
-          ToastSuccess("Subcategoría eliminada con éxito");
           setTimeout(() => {
             onClose();
             reset();
             refreshSubcategories();
-            dispatch(cleanAlertSubcategory());
           }, 0);
         })
     });

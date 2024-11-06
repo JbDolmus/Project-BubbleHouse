@@ -76,7 +76,7 @@ export const editBill = createAsyncThunk("bill/editBill", async (data) => {
             Authorization: `Bearer ${data.token}`,
             Accept: "application/json",
         },
-        body: JSON.stringify({invoiceProducts: data.invoiceProducts}),
+        body: JSON.stringify({invoiceProducts: data.invoiceProducts, invoiceRecipes: data.invoiceRecipes}),
     });
     const jsonResponse = await response.json();
     return jsonResponse;

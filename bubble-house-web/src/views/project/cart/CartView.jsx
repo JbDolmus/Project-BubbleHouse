@@ -66,25 +66,44 @@ export default function CartView() {
   };
 
   const makeOrder = () => {
-    const invoiceProducts = products.map(product => {
-      const subtotal = parseFloat(product.price) * product.quantity;
-      const discount = subtotal * (product.tax / 100);
-      const total = subtotal - discount;
+    const { invoiceProducts, invoiceRecipes } = products.reduce(
+      (acc, product) => {
+        const subtotal = parseFloat(product.price) * product.quantity;
+        const discount = product.ingredients
+          ? product.discount * product.quantity
+          : subtotal * (product.tax / 100);
+        const total = subtotal - discount;
 
-      return {
-        product: product.id,
-        amount: product.quantity,
-        subtotal: subtotal.toFixed(2),
-        discount: discount.toFixed(2),
-        total: total.toFixed(2)
-      };
-    });
+        if (product.ingredients) {
+          
+          acc.invoiceRecipes.push({
+            recipe: product.idRecipe,
+            amount: product.quantity,
+            subtotal: subtotal.toFixed(2),
+            discount: discount.toFixed(2),
+            total: total.toFixed(2),
+          });
+        } else {
+          
+          acc.invoiceProducts.push({
+            product: product.id,
+            amount: product.quantity,
+            subtotal: subtotal.toFixed(2),
+            discount: discount.toFixed(2),
+            total: total.toFixed(2),
+          });
+        }
+
+        return acc;
+      },
+      { invoiceProducts: [], invoiceRecipes: [] }
+    );
 
     SweetAlertQuestion(
       'Realizar pedido',
       '¿Desea realizar el pedido?',
       () => {
-        dispatch(addBill({ invoiceProducts }))
+        dispatch(addBill({ invoiceProducts, invoiceRecipes }))
           .unwrap()
           .then(() => {
             dispatch(clearCart());
@@ -95,7 +114,6 @@ export default function CartView() {
       'Gracias por su compra! Dentro de poco se efectuará el cobro.'
     );
   };
-
 
   const cancelOrder = () => {
     SweetAlertQuestion(

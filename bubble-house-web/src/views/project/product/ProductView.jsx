@@ -5,8 +5,8 @@ import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux';
 import NavBarPrincipal from '@/layouts/NavBarPrincipal'
 import { getSubcategories } from '@/redux/thunks/subcategoryThunks';
-import { getProducts } from '@/redux/thunks/productThunks';
-import { ToastError } from "@/assets/js/toastify";
+import { getProducts, cleanAlertProduct } from '@/redux/thunks/productThunks';
+import { ToastError, ToastSuccess } from "@/assets/js/toastify";
 import FormProduct from "./FormProduct";
 import { removeAccents } from '@/utils/removeAccents';
 import Spinner from '@/components/Spinner';
@@ -18,7 +18,7 @@ export default function ProductView() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredProducts, setFilteredProducts] = useState([]);
   const dispatch = useDispatch();
-  const { products, errorRedux, loading } = useSelector(state => state.product);
+  const { products, errorRedux, loading, message } = useSelector(state => state.product);
   const { subcategories } = useSelector(state => state.subcategory);
   const loadProducts = () => {
     dispatch(getProducts());
@@ -30,10 +30,15 @@ export default function ProductView() {
   }, [dispatch]);
 
   useEffect(() => {
+    if (message) {
+      ToastSuccess(message);
+      dispatch(cleanAlertProduct());
+    }
     if (errorRedux) {
       ToastError(errorRedux);
+      dispatch(cleanAlertProduct());
     }
-  }, [errorRedux]);
+  }, [errorRedux, message]);
 
   useEffect(() => {
     if (products) {
