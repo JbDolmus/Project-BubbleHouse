@@ -2,8 +2,8 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button, Modal } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { addIngredient, editIngredient, deleteIngredient, cleanAlertIngredient } from '@/redux/thunks/ingredientThunks';
-import { ToastError, ToastSuccess } from "@/assets/js/toastify";
+import { addIngredient, editIngredient, deleteIngredient } from '@/redux/thunks/ingredientThunks';
+import { ToastError } from "@/assets/js/toastify";
 import { SweetAlertEliminar } from "@/assets/js/sweetAlert";
 import ErrorMessage from '@/components/ErrorMessage';
 
@@ -44,7 +44,7 @@ export default function FormIngredient({ isVisible, onClose, refreshIngredients,
     const isDuplicateIngredient = (formData) => {
         const isDuplicateName = ingredients.some(ingredient => ingredient.name === formData.name && ingredient.id !== selectedIngredient?.id);
         if (isDuplicateName) {
-            ToastError("Ese ingrediente ya existe.");
+            ToastError("Ese ingrediente ya existe!");
             return true;
         }
 
@@ -75,21 +75,17 @@ export default function FormIngredient({ isVisible, onClose, refreshIngredients,
             dispatch(editIngredient(ingredientData))
                 .unwrap()
                 .then(() => {
-                    ToastSuccess("Ingrediente actualizado con éxito");
                     onClose();
                     reset();
                     refreshIngredients();
-                    dispatch(cleanAlertIngredient());
                 })
         } else {
             dispatch(addIngredient(ingredientData))
                 .unwrap()
                 .then(() => {
-                    ToastSuccess("Ingrediente agregado con éxito");
                     onClose();
                     reset();
                     refreshIngredients();
-                    dispatch(cleanAlertIngredient());
                 })
         }
     }
@@ -104,12 +100,10 @@ export default function FormIngredient({ isVisible, onClose, refreshIngredients,
             dispatch(deleteIngredient({ id: selectedIngredient.id, token }))
                 .unwrap()
                 .then(() => {
-                    ToastSuccess("Ingrediente eliminado con éxito");
                     setTimeout(() => {
                         onClose();
                         reset();
                         refreshIngredients();
-                        dispatch(cleanAlertIngredient());
                     }, 0);
                 })
         });
@@ -179,6 +173,7 @@ export default function FormIngredient({ isVisible, onClose, refreshIngredients,
                         {...register("discount", {
                             required: "El descuento es obligatorio",
                             min: { value: 0, message: "El descuento no puede ser menor a 0" },
+                            max: { value: 100, message: "El descuento no puede ser mayor a 100" },
                             valueAsNumber: true,
                         })}
                     />
@@ -191,7 +186,7 @@ export default function FormIngredient({ isVisible, onClose, refreshIngredients,
                     <select
                         id="idCategoryIngredient"
                         className="w-full p-3 border-gray-300 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        {...register("idCategoryIngredient", { required: "La subcategoría es obligatoria" })}
+                        {...register("idCategoryIngredient", { required: "La categoría es obligatoria" })}
                     >
                         <option value="">Selecciona una categoría</option>
                         {categories && categories.length > 0 ? (

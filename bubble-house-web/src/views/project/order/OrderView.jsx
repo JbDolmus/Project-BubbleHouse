@@ -70,12 +70,12 @@ export default function OrderView() {
     markBillAsChanged(billId);
   };
 
-  const handleRemoveProduct = (billId, invoiceProduct) => {
+  const handleRemoveProduct = (billId, nameProduct, productId) => {
     SweetAlertQuestion(
       'Quitar del pedido',
-      `¿Desea quitar el producto ${invoiceProduct.product.name} del pedido?`,
+      `¿Desea quitar el producto ${nameProduct} del pedido?`,
       () => {
-        dispatch(removeProductFromBill({ billId, productId: invoiceProduct.id }));
+        dispatch(removeProductFromBill({ billId, productId }));
         markBillAsChanged(billId);
       },
       'Producto eliminado del pedido!'
@@ -90,17 +90,24 @@ export default function OrderView() {
       amount: invoiceProduct.amount,
       subtotal: invoiceProduct.subtotal,
       discount: invoiceProduct.discount,
-      total: invoiceProduct.total
+      total: invoiceProduct.total,
+      tax: invoiceProduct.product.tax,
+    }));
+    const updatedInvoiceRecipes = bill.invoiceRecipes.map((invoiceRecipe) => ({
+      recipe: invoiceRecipe.recipe.id,
+      amount: invoiceRecipe.amount,
+      subtotal: invoiceRecipe.subtotal,
+      discount: invoiceRecipe.discount,
+      total: invoiceRecipe.total,
     }));
 
-    dispatch(editBill({ id: billId, invoiceProducts: updatedInvoiceProducts, token }))
+    dispatch(editBill({ id: billId, invoiceProducts: updatedInvoiceProducts, invoiceRecipes: updatedInvoiceRecipes, token }))
       .unwrap()
       .then(() => {
         loadBills();
         setChangesByBill((prev) => ({ ...prev, [billId]: false }));
         dispatch(cleanAlertBill());
       });
-
   };
 
   const handlePayBill = (bill) => {
@@ -231,7 +238,7 @@ export default function OrderView() {
                         </div>
                         <h2 className='text-2xl text-gray-700 font-bold mb-2'>Factura</h2>
                         <div className="overflow-x-auto">
-                          <table className="w-full min-w-[700px] bg-white">
+                          <table className="w-full min-w-[750px] bg-white">
                             <thead>
                               <tr className="bg-blue-200 text-left">
                                 <th className="text-center px-4 py-2 text-gray-700">Producto</th>
@@ -245,12 +252,13 @@ export default function OrderView() {
                               {bill.invoiceProducts && bill.invoiceProducts.map((invoiceProduct) => (
                                 <tr key={invoiceProduct.id} className="border-t">
                                   <td className="px-4 py-2">
-                                    {invoiceProduct.product.name}
+                                    <span className="font-semibold text-gray-700">{invoiceProduct.product.name}</span>
                                   </td>
                                   <td className="text-center px-4 py-2 space-x-2">
                                     <button
-                                      className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-1 px-2 rounded transition transform active:translate-y-1"
+                                      className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-1 px-2 rounded disabled:opacity-50 disabled:cursor-not-allowed transition transform active:translate-y-1"
                                       onClick={() => handleDecrement(bill.id, invoiceProduct.id)}
+                                      disabled={invoiceProduct.amount < 2}
                                     >
                                       -
                                     </button>
@@ -267,8 +275,9 @@ export default function OrderView() {
                                   </td>
                                   <td className="text-center px-4 py-2 space-x-2">
                                     <button
-                                      className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-1 px-2 rounded transition transform active:translate-y-1"
+                                      className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-1 px-2 rounded disabled:opacity-50 disabled:cursor-not-allowed transition transform active:translate-y-1"
                                       onClick={() => handleDecrementTax(bill.id, invoiceProduct.id)}
+                                      disabled={invoiceProduct.product.tax < 1}
                                     >
                                       -
                                     </button>
@@ -284,7 +293,7 @@ export default function OrderView() {
                                     <Tooltip title="Eliminar producto" placement="right">
                                       <button
                                         className="text-red-500 hover:text-red-700 hover:bg-red-100 rounded p-2 transition transform active:translate-y-1"
-                                        onClick={() => handleRemoveProduct(bill.id, invoiceProduct)}
+                                        onClick={() => handleRemoveProduct(bill.id, invoiceProduct.product.name, invoiceProduct.id)}
                                       >
                                         <FaTrash />
                                       </button>
@@ -292,6 +301,72 @@ export default function OrderView() {
                                   </td>
                                 </tr>
                               ))}
+                              {bill.invoiceRecipes && bill.invoiceRecipes.map((invoiceRecipe) => (
+                                <tr key={invoiceRecipe.id} className="border-t">
+                                  <td className="px-4 py-2">
+                                    <div className="flex flex-col space-y-2">
+                                      <span className="font-semibold text-gray-700">{invoiceRecipe.recipe.name}</span>
+                                      <ul className="mt-1">
+                                        {invoiceRecipe.recipe.ingredients && invoiceRecipe.recipe.ingredients.map((ingredient) => (
+                                          <li
+                                            key={ingredient.id}
+                                            className="text-gray-600 flex items-center space-x-2 mt-1"
+                                          >
+                                            <span className="bg-green-50 text-green-600 font-medium py-1 px-2 rounded-lg shadow-sm border border-green-200 text-sm">
+                                              {ingredient.ingredient.ingredient_category.name}: {ingredient.ingredient.name}
+                                            </span>
+                                          </li>
+                                        ))}
+                                      </ul>
+                                    </div>
+                                  </td>
+                                  <td className="text-center px-4 py-2 space-x-2">
+                                    <button
+                                      className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-1 px-2 rounded disabled:opacity-50 disabled:cursor-not-allowed transition transform active:translate-y-1"
+                                      onClick={() => handleDecrement(bill.id, invoiceRecipe.id)}
+                                      disabled={invoiceRecipe.amount < 2}
+                                    >
+                                      -
+                                    </button>
+                                    <span>{invoiceRecipe.amount}</span>
+                                    <button
+                                      className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-1 px-2 rounded transition transform active:translate-y-1"
+                                      onClick={() => handleIncrement(bill.id, invoiceRecipe.id)}
+                                    >
+                                      +
+                                    </button>
+                                  </td>
+                                  <td className="text-center px-4 py-2">
+                                    ₡{invoiceRecipe.recipe.total_price - invoiceRecipe.recipe.total_discount}
+                                  </td>
+                                  <td className="text-center px-4 py-2 space-x-2">
+                                    <button
+                                      className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-1 px-2 rounded disabled:opacity-50 disabled:cursor-not-allowed transition transform active:translate-y-1"
+                                      disabled={true}
+                                    >
+                                      -
+                                    </button>
+                                    <span>0%</span>
+                                    <button
+                                      className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-1 px-2 rounded disabled:opacity-50 disabled:cursor-not-allowed transition transform active:translate-y-1"
+                                      disabled={true}
+                                    >
+                                      +
+                                    </button>
+                                  </td>
+                                  <td className="text-center px-4 py-2">
+                                    <Tooltip title="Eliminar producto" placement="right">
+                                      <button
+                                        className="text-red-500 hover:text-red-700 hover:bg-red-100 rounded p-2 transition transform active:translate-y-1"
+                                        onClick={() => handleRemoveProduct(bill.id, invoiceRecipe.recipe.name, invoiceRecipe.id)}
+                                      >
+                                        <FaTrash />
+                                      </button>
+                                    </Tooltip>
+                                  </td>
+                                </tr>
+                              ))}
+
                             </tbody>
                           </table>
                         </div>
@@ -381,10 +456,34 @@ export default function OrderView() {
                           {bill.invoiceProducts && bill.invoiceProducts.map((invoiceProduct) => (
                             <tr key={invoiceProduct.id} className="border-t">
                               <td className="px-4 py-2">
-                                {invoiceProduct.product.name}
+                              <span className="font-semibold text-gray-700">{invoiceProduct.product.name}</span>
                               </td>
                               <td className="text-center px-4 py-2 space-x-2">
                                 <span>{invoiceProduct.amount}</span>
+                              </td>
+                            </tr>
+                          ))}
+                          {bill.invoiceRecipes && bill.invoiceRecipes.map((invoiceRecipe) => (
+                            <tr key={invoiceRecipe.id} className="border-t">
+                              <td className="px-4 py-2">
+                                <div className="flex flex-col space-y-2">
+                                  <span className="font-semibold text-gray-700">{invoiceRecipe.recipe.name}</span>
+                                  <ul className="mt-1">
+                                    {invoiceRecipe.recipe.ingredients && invoiceRecipe.recipe.ingredients.map((ingredient) => (
+                                      <li
+                                        key={ingredient.id}
+                                        className="text-gray-600 flex items-center space-x-2 mt-1"
+                                      >
+                                        <span className="bg-green-50 text-green-600 font-medium py-1 px-2 rounded-lg shadow-sm border border-green-200 text-sm">
+                                          {ingredient.ingredient.ingredient_category.name}: {ingredient.ingredient.name}
+                                        </span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              </td>
+                              <td className="text-center px-4 py-2 space-x-2">
+                                <span>{invoiceRecipe.amount}</span>
                               </td>
                             </tr>
                           ))}
@@ -396,14 +495,14 @@ export default function OrderView() {
                     <div className="mt-8 flex flex-col sm:flex-row sm:justify-between space-y-4 sm:space-y-0">
                       <button
                         className="bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition transform active:translate-y-1"
-                        disabled={bill.invoiceProducts.length === 0}
+                        disabled={bill.invoiceProducts.length === 0 && bill.invoiceRecipes.length === 0}
                         onClick={() => handleCompleteBill(bill.id)}
                       >
                         Completar Pedido
                       </button>
                       <button
                         className="bg-red-500 text-white font-bold py-2 px-4 rounded hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition transform active:translate-y-1"
-                        disabled={bill.invoiceProducts.length === 0}
+                        disabled={bill.invoiceProducts.length === 0 && bill.invoiceRecipes.length === 0}
                         onClick={() => handleCancelOrder(bill.id)}
                       >
                         Cancelar Pedido

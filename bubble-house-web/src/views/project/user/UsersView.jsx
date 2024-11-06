@@ -46,7 +46,7 @@ export default function UsersView() {
       ToastError(errorRedux);
       dispatch(cleanAlert());
     }
-  }, [errorRedux, message, messageRol, dispatch]);
+  }, [errorRedux, message, messageRol]);
 
   useEffect(() => {
     if (users) {

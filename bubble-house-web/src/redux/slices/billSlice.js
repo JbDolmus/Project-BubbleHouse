@@ -30,20 +30,34 @@ const billSlice = createSlice({
             const bill = state.bills.find((bill) => bill.id === billId);
 
             if (bill) {
-                const invoiceProduct = bill.invoiceProducts.find((product) => product.id === productId);
+
+                const invoiceProduct = bill.invoiceProducts.find((p) => p.id === productId);
+                const invoiceRecipe = bill.invoiceRecipes.find((r) => r.id === productId);
 
                 if (invoiceProduct) {
+
                     invoiceProduct.amount += 1;
 
                     const price = parseFloat(invoiceProduct.product.price);
                     invoiceProduct.subtotal = (price * invoiceProduct.amount).toFixed(2);
                     invoiceProduct.discount = (invoiceProduct.subtotal * (invoiceProduct.product.tax / 100)).toFixed(2);
                     invoiceProduct.total = (parseFloat(invoiceProduct.subtotal) - parseFloat(invoiceProduct.discount)).toFixed(2);
+                } else if (invoiceRecipe) {
 
-                    bill.subtotal = bill.invoiceProducts.reduce((sum, p) => sum + parseFloat(p.subtotal), 0).toFixed(2);
-                    bill.discount = bill.invoiceProducts.reduce((sum, p) => sum + parseFloat(p.discount), 0).toFixed(2);
-                    bill.total = (bill.subtotal - parseFloat(bill.discount)).toFixed(2);
+                    invoiceRecipe.amount += 1;
+
+                    invoiceRecipe.subtotal = (invoiceRecipe.recipe.total_price * invoiceRecipe.amount).toFixed(2);
+                    invoiceRecipe.discount = (invoiceRecipe.recipe.total_discount * invoiceRecipe.amount).toFixed(2);
+                    invoiceRecipe.total = (invoiceRecipe.subtotal - invoiceRecipe.discount).toFixed(2);
                 }
+
+                bill.subtotal = [...bill.invoiceProducts, ...bill.invoiceRecipes].reduce(
+                    (sum, item) => sum + parseFloat(item.subtotal), 0
+                ).toFixed(2);
+                bill.discount = [...bill.invoiceProducts, ...bill.invoiceRecipes].reduce(
+                    (sum, item) => sum + parseFloat(item.discount), 0
+                ).toFixed(2);
+                bill.total = (bill.subtotal - bill.discount).toFixed(2);
             }
         },
 
@@ -53,22 +67,37 @@ const billSlice = createSlice({
             const bill = state.bills.find((bill) => bill.id === billId);
 
             if (bill) {
-                const invoiceProduct = bill.invoiceProducts.find((product) => product.id === productId);
+                const invoiceProduct = bill.invoiceProducts.find((p) => p.id === productId);
+                const invoiceRecipe = bill.invoiceRecipes.find((r) => r.id === productId);
 
                 if (invoiceProduct && invoiceProduct.amount > 1) {
+
                     invoiceProduct.amount -= 1;
 
                     const price = parseFloat(invoiceProduct.product.price);
                     invoiceProduct.subtotal = (price * invoiceProduct.amount).toFixed(2);
                     invoiceProduct.discount = (invoiceProduct.subtotal * (invoiceProduct.product.tax / 100)).toFixed(2);
                     invoiceProduct.total = (parseFloat(invoiceProduct.subtotal) - parseFloat(invoiceProduct.discount)).toFixed(2);
+                } else if (invoiceRecipe && invoiceRecipe.amount > 1) {
 
-                    bill.subtotal = bill.invoiceProducts.reduce((sum, p) => sum + parseFloat(p.subtotal), 0).toFixed(2);
-                    bill.discount = bill.invoiceProducts.reduce((sum, p) => sum + parseFloat(p.discount), 0).toFixed(2);
-                    bill.total = (bill.subtotal - parseFloat(bill.discount)).toFixed(2);
+                    invoiceRecipe.amount -= 1;
+
+                    invoiceRecipe.subtotal = (invoiceRecipe.recipe.total_price * invoiceRecipe.amount).toFixed(2);
+                    invoiceRecipe.discount = (invoiceRecipe.recipe.total_discount * invoiceRecipe.amount).toFixed(2);
+                    invoiceRecipe.total = (invoiceRecipe.subtotal - invoiceRecipe.discount).toFixed(2);
                 }
+
+                bill.subtotal = [...bill.invoiceProducts, ...bill.invoiceRecipes].reduce(
+                    (sum, item) => sum + parseFloat(item.subtotal), 0
+                ).toFixed(2);
+                bill.discount = [...bill.invoiceProducts, ...bill.invoiceRecipes].reduce(
+                    (sum, item) => sum + parseFloat(item.discount), 0
+                ).toFixed(2);
+                bill.total = (bill.subtotal - bill.discount).toFixed(2);
             }
         },
+
+
         incrementTax: (state, action) => {
             const { billId, productId } = action.payload;
 
@@ -85,9 +114,13 @@ const billSlice = createSlice({
                     invoiceProduct.discount = (invoiceProduct.subtotal * (invoiceProduct.product.tax / 100)).toFixed(2);
                     invoiceProduct.total = (parseFloat(invoiceProduct.subtotal) - parseFloat(invoiceProduct.discount)).toFixed(2);
 
-                    bill.subtotal = bill.invoiceProducts.reduce((sum, p) => sum + parseFloat(p.subtotal), 0).toFixed(2);
-                    bill.discount = bill.invoiceProducts.reduce((sum, p) => sum + parseFloat(p.discount), 0).toFixed(2);
-                    bill.total = (bill.subtotal - parseFloat(bill.discount)).toFixed(2);
+                    bill.subtotal = [...bill.invoiceProducts, ...bill.invoiceRecipes].reduce(
+                        (sum, item) => sum + parseFloat(item.subtotal), 0
+                    ).toFixed(2);
+                    bill.discount = [...bill.invoiceProducts, ...bill.invoiceRecipes].reduce(
+                        (sum, item) => sum + parseFloat(item.discount), 0
+                    ).toFixed(2);
+                    bill.total = (bill.subtotal - bill.discount).toFixed(2);
                 }
             }
         },
@@ -108,9 +141,13 @@ const billSlice = createSlice({
                     invoiceProduct.discount = (invoiceProduct.subtotal * (invoiceProduct.product.tax / 100)).toFixed(2);
                     invoiceProduct.total = (parseFloat(invoiceProduct.subtotal) - parseFloat(invoiceProduct.discount)).toFixed(2);
 
-                    bill.subtotal = bill.invoiceProducts.reduce((sum, p) => sum + parseFloat(p.subtotal), 0).toFixed(2);
-                    bill.discount = bill.invoiceProducts.reduce((sum, p) => sum + parseFloat(p.discount), 0).toFixed(2);
-                    bill.total = (bill.subtotal - parseFloat(bill.discount)).toFixed(2);
+                    bill.subtotal = [...bill.invoiceProducts, ...bill.invoiceRecipes].reduce(
+                        (sum, item) => sum + parseFloat(item.subtotal), 0
+                    ).toFixed(2);
+                    bill.discount = [...bill.invoiceProducts, ...bill.invoiceRecipes].reduce(
+                        (sum, item) => sum + parseFloat(item.discount), 0
+                    ).toFixed(2);
+                    bill.total = (bill.subtotal - bill.discount).toFixed(2);
                 }
             }
         },
@@ -121,21 +158,20 @@ const billSlice = createSlice({
             const bill = state.bills.find((bill) => bill.id === billId);
 
             if (bill) {
-                bill.invoiceProducts = bill.invoiceProducts.filter(
-                    (product) => product.id !== productId
-                );
 
-                bill.subtotal = bill.invoiceProducts.reduce(
-                    (sum, p) => sum + parseFloat(p.subtotal),
-                    0
+                bill.invoiceProducts = bill.invoiceProducts.filter((product) => product.id !== productId);
+                bill.invoiceRecipes = bill.invoiceRecipes.filter((recipe) => recipe.id !== productId);
+
+                bill.subtotal = [...bill.invoiceProducts, ...bill.invoiceRecipes].reduce(
+                    (sum, item) => sum + parseFloat(item.subtotal), 0
                 ).toFixed(2);
-                bill.discount = bill.invoiceProducts.reduce(
-                    (sum, p) => sum + parseFloat(p.discount),
-                    0
+                bill.discount = [...bill.invoiceProducts, ...bill.invoiceRecipes].reduce(
+                    (sum, item) => sum + parseFloat(item.discount), 0
                 ).toFixed(2);
                 bill.total = (bill.subtotal - parseFloat(bill.discount)).toFixed(2);
             }
         },
+
 
     },
     extraReducers: (builder) => {

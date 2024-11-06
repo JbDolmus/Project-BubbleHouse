@@ -65,17 +65,17 @@ const productSlice = createSlice({
             state.message = "";
         });
         builder.addCase(addProduct.fulfilled, (state, action) => {
-            if (action.payload) {
+            if (action.payload.id) {
                 state.loading = false;
-                state.message = "Producto agregado con éxito!";
+                state.message = "¡Producto agregado con éxito!";
             } else {
-                state.errorRedux = "Ocurrió un error al agregar el producto!";
+                state.errorRedux = "¡Ese producto ya existe!";
             }
             state.loading = false;
         });
         builder.addCase(addProduct.rejected, (state) => {
             state.loading = false;
-            state.errorRedux = "Ocurrió un error al agregar el producto!";
+            state.errorRedux = "¡Ocurrió un error al agregar el producto!";
         });
 
         // Editar producto
@@ -85,17 +85,17 @@ const productSlice = createSlice({
             state.message = "";
         });
         builder.addCase(editProduct.fulfilled, (state, action) => {
-            if (action.payload) {
+            if (action.payload.id) {
                 state.loading = false;
-                state.message = "Producto actualizado con éxito!";
+                state.message = "¡Producto actualizado con éxito!";
             } else {
-                state.errorRedux = "Ocurrió un error al editar el producto!";
+                state.errorRedux = "¡Ese producto ya existe!";
             }
             state.loading = false;
         });
         builder.addCase(editProduct.rejected, (state) => {
             state.loading = false;
-            state.errorRedux = "Ocurrió un error al editar el producto!";
+            state.errorRedux = "¡Ocurrió un error al editar el producto!";
         });
 
         // Eliminar producto
@@ -106,7 +106,7 @@ const productSlice = createSlice({
         });
         builder.addCase(deleteProduct.fulfilled, (state, action) => {
             if (action.payload.success) {
-                state.message = "Producto eliminado con éxito!";
+                state.message = "¡Producto eliminado con éxito!";
                 state.loading = false;
             } else {
                 state.errorRedux = "Ocurrió un error al eliminar el producto!";

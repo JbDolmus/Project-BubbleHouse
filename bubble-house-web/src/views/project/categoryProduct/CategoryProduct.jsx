@@ -4,8 +4,8 @@ import { FaPlus, FaArrowLeft, FaSearch } from "react-icons/fa";
 import NavBarPrincipal from "@/layouts/NavBarPrincipal";
 import FormCategoryProducto from "./FormCategoryProducto";
 import { useDispatch, useSelector } from "react-redux";
-import { getCategories } from "@/redux/thunks/categoryThunks";
-import { ToastError } from "@/assets/js/toastify";
+import { getCategories, cleanAlertCategory } from "@/redux/thunks/categoryThunks";
+import { ToastError, ToastSuccess } from "@/assets/js/toastify";
 import { Tooltip } from "antd";
 import { removeAccents } from "@/utils/removeAccents";
 import Spinner from "@/components/Spinner";
@@ -16,7 +16,7 @@ export default function CategoryProduct() {
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredCategories, setFilteredCategories] = useState([]);
     const dispatch = useDispatch();
-    const { categories, errorRedux, loading } = useSelector(state => state.category);
+    const { categories, errorRedux, loading, message } = useSelector(state => state.category);
 
     const loadCategories = () => {
         dispatch(getCategories());
@@ -27,10 +27,15 @@ export default function CategoryProduct() {
     }, [dispatch]);
 
     useEffect(() => {
+        if (message) {
+            ToastSuccess(message);
+            dispatch(cleanAlertCategory());
+        }
         if (errorRedux) {
             ToastError(errorRedux);
+            dispatch(cleanAlertCategory());
         }
-    }, [errorRedux]);
+    }, [errorRedux, message]);
 
     useEffect(() => {
         if (categories) {

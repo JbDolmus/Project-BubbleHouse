@@ -30,13 +30,13 @@ const categorySlice = createSlice({
                 state.loading = false;
                 state.categories = action.payload;
             } else {
-                state.errorRedux = "Ocurrió un error al cargar las categorías!";
+                state.errorRedux = "¡Ocurrió un error al cargar las categorías!";
             }
             state.loading = false;
         });
         builder.addCase(getCategories.rejected, (state) => {
             state.loading = false;
-            state.errorRedux = "Ocurrió un error al cargar las categorías!";
+            state.errorRedux = "¡Ocurrió un error al cargar las categorías!";
         });
 
         //Obtener una categoría
@@ -49,13 +49,13 @@ const categorySlice = createSlice({
             if (action.payload) {
                 state.category = action.payload.categoria;
             } else {
-                state.errorRedux = "Ocurrió un error al cargar la categoría!";
+                state.errorRedux = "¡Ocurrió un error al cargar la categoría!";
             }
             state.loading = false;
         });
         builder.addCase(getCategory.rejected, (state) => {
             state.loading = false;
-            state.errorRedux = "Ocurrió un error al cargar la categoría!";
+            state.errorRedux = "¡Ocurrió un error al cargar la categoría!";
         });
 
         //Agregar categoría
@@ -65,17 +65,17 @@ const categorySlice = createSlice({
             state.message = "";
         });
         builder.addCase(addCategory.fulfilled, (state, action) => {
-            if (action.payload) {
+            if (action.payload.id) {
                 state.loading = false;
-                state.message = "Categoría agregada con éxito!";
+                state.message = "¡Categoría agregada con éxito!";
             } else {
-                state.errorRedux = "Ocurrió un error al agregar la categoría!";
+                state.errorRedux = "¡Esa categoría ya existe!";
             }
             state.loading = false;
         });
         builder.addCase(addCategory.rejected, (state) => {
             state.loading = false;
-            state.errorRedux = "Ocurrió un error al agregar la categoría!";
+            state.errorRedux = "¡Ocurrió un error al agregar la categoría!";
         });
 
         // Editar categoría
@@ -85,17 +85,17 @@ const categorySlice = createSlice({
             state.message = "";
         });
         builder.addCase(editCategory.fulfilled, (state, action) => {
-            if (action.payload) {
+            if (action.payload.id) {
                 state.loading = false;
-                state.message = "Categoría actualizada con éxito!";
+                state.message = "¡Categoría actualizada con éxito!";
             } else {
-                state.errorRedux = "Ocurrió un error al editar la categoría!";
+                state.errorRedux = "¡Esa categoría ya existe!";
             }
             state.loading = false;
         });
         builder.addCase(editCategory.rejected, (state) => {
             state.loading = false;
-            state.errorRedux = "Ocurrió un error al editar la categoría!";
+            state.errorRedux = "¡Ocurrió un error al editar la categoría!";
         });
 
         // Eliminar categoría
@@ -106,16 +106,16 @@ const categorySlice = createSlice({
         });
         builder.addCase(deleteCategory.fulfilled, (state, action) => {
             if (action.payload.success) {
-                state.message = "Categoría eliminada con éxito!";
+                state.message = "¡Categoría eliminada con éxito!";
                 state.loading = false;
             } else {
-                state.errorRedux = "Ocurrió un error al eliminar la categoría!";
+                state.errorRedux = "¡Ocurrió un error al eliminar la categoría!";
             }
             state.loading = false;
         });
         builder.addCase(deleteCategory.rejected, (state) => {
             state.loading = false;
-            state.errorRedux = "Ocurrió un error al eliminar la categoría!";
+            state.errorRedux = "¡Ocurrió un error al eliminar la categoría!";
         });
 
         // Limpiar alertas

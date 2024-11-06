@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 import NavBarPrincipal from '@/layouts/NavBarPrincipal'
 import { FaPlus, FaArrowLeft, FaSearch } from 'react-icons/fa'
 import { useDispatch, useSelector } from 'react-redux';
-import { getSubcategories } from '@/redux/thunks/subcategoryThunks';
-import { ToastError } from "@/assets/js/toastify";
+import { getSubcategories, cleanAlertSubcategory } from '@/redux/thunks/subcategoryThunks';
+import { ToastError, ToastSuccess } from "@/assets/js/toastify";
 import FormSubcategoryProduct from "./FormSubcategoryProduct";
 import { getCategories } from "@/redux/thunks/categoryThunks";
 import { Tooltip } from 'antd';
@@ -18,7 +18,7 @@ export default function SubcategoryProduct() {
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredSubcategories, setFilteredSubcategories] = useState([]);
     const dispatch = useDispatch();
-    const { subcategories, errorRedux, loading } = useSelector(state => state.subcategory);
+    const { subcategories, errorRedux, loading, message } = useSelector(state => state.subcategory);
     const { categories } = useSelector(state => state.category);
 
     const loadSubcategories = () => {
@@ -31,10 +31,15 @@ export default function SubcategoryProduct() {
     }, [dispatch]);
 
     useEffect(() => {
+        if (message) {
+            ToastSuccess(message);
+            dispatch(cleanAlertSubcategory());
+        }
         if (errorRedux) {
             ToastError(errorRedux);
+            dispatch(cleanAlertSubcategory());
         }
-    }, [errorRedux]);
+    }, [errorRedux, message]);
 
     useEffect(() => {
         if (subcategories) {

@@ -3,8 +3,8 @@ import { FaPlus, FaCheckCircle, FaSearch } from 'react-icons/fa'
 import { GoAlertFill } from "react-icons/go";
 import { useDispatch, useSelector } from 'react-redux';
 import NavBarPrincipal from '@/layouts/NavBarPrincipal'
-import { getIngredients, getIngredientCategories } from '@/redux/thunks/ingredientThunks';
-import { ToastError } from "@/assets/js/toastify";
+import { getIngredients, getIngredientCategories, cleanAlertIngredient } from '@/redux/thunks/ingredientThunks';
+import { ToastError, ToastSuccess } from "@/assets/js/toastify";
 import { removeAccents } from '@/utils/removeAccents';
 import FormIngredient from './FormIngredient';
 import Spinner from '@/components/Spinner';
@@ -16,9 +16,7 @@ export default function IngredientView() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredIngredients, setFilteredIngredients] = useState([]);
   const dispatch = useDispatch();
-  const { ingredients, categories, errorRedux, loading } = useSelector(state => state.ingredient);
-
-
+  const { ingredients, categories, errorRedux, loading, message } = useSelector(state => state.ingredient);
 
   const loadIngredients = () => {
     dispatch(getIngredients());
@@ -29,10 +27,15 @@ export default function IngredientView() {
   }, [dispatch]);
 
   useEffect(() => {
+    if (message) {
+      ToastSuccess(message);
+      dispatch(cleanAlertIngredient());
+    }
     if (errorRedux) {
       ToastError(errorRedux);
+      dispatch(cleanAlertIngredient());
     }
-  }, [errorRedux]);
+  }, [errorRedux, message]);
 
   useEffect(() => {
     if (ingredients) {

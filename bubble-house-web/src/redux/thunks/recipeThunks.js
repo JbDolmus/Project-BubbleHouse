@@ -8,9 +8,8 @@ export const addRecipe = createAsyncThunk("recipe/addRecipe", async (data) => {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${data.token}`,
         },
-        body: JSON.stringify(data.recipe),
+        body: JSON.stringify(data),
     });
 
     const jsonResponse = await response.json();

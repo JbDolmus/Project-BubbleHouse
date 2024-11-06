@@ -2,8 +2,8 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button, Modal } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { addProduct, editProduct, deleteProduct, cleanAlertProduct } from '@/redux/thunks/productThunks';
-import { ToastError, ToastSuccess } from "@/assets/js/toastify";
+import { addProduct, editProduct, deleteProduct } from '@/redux/thunks/productThunks';
+import { ToastError } from "@/assets/js/toastify";
 import { SweetAlertEliminar } from "@/assets/js/sweetAlert";
 import ErrorMessage from '@/components/ErrorMessage';
 
@@ -44,7 +44,7 @@ const FormProduct = ({ isVisible, onClose, refreshProducts, selectedProduct, sub
     const isDuplicateProduct = (formData) => {
         const isDuplicateName = products.some(product => product.name === formData.name && product.id !== selectedProduct?.id);
         if (isDuplicateName) {
-            ToastError("Ese producto ya existe.");
+            ToastError("¡Ese producto ya existe!");
             return true;
         }
 
@@ -76,22 +76,17 @@ const FormProduct = ({ isVisible, onClose, refreshProducts, selectedProduct, sub
             dispatch(editProduct(productData))
                 .unwrap()
                 .then(() => {
-                    ToastSuccess("Producto actualizado con éxito");
                     onClose();
                     reset();
                     refreshProducts();
-                    dispatch(cleanAlertProduct());
                 })
         } else {
             dispatch(addProduct(productData))
                 .unwrap()
                 .then(() => {
-
-                    ToastSuccess("Producto agregado con éxito");
                     onClose();
                     reset();
                     refreshProducts();
-                    dispatch(cleanAlertProduct());
                 })
         }
     }
@@ -106,12 +101,10 @@ const FormProduct = ({ isVisible, onClose, refreshProducts, selectedProduct, sub
             dispatch(deleteProduct({ id: selectedProduct.id, token }))
                 .unwrap()
                 .then(() => {
-                    ToastSuccess("Producto eliminado con éxito");
                     setTimeout(() => {
                         onClose();
                         reset();
                         refreshProducts();
-                        dispatch(cleanAlertProduct());
                     }, 0);
                 })
         });
@@ -181,6 +174,7 @@ const FormProduct = ({ isVisible, onClose, refreshProducts, selectedProduct, sub
                         {...register("tax", {
                             required: "El descuento es obligatorio",
                             min: { value: 0, message: "El descuento no puede ser menor a 0" },
+                            max: { value: 100, message: "El descuento no puede ser mayor a 100" },
                             valueAsNumber: true,
                         })}
                     />
