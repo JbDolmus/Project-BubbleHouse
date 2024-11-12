@@ -131,7 +131,7 @@ export default function CartView() {
 
   return (
     <>
-      <NavBarSecondary title="Carrito de compras" />
+      <NavBarSecondary title="Carrito" />
       <div className="flex flex-col items-center justify-center w-full p-4">
         <div className="w-full max-w-4xl bg-white rounded-lg p-6 shadow-lg relative">
 
