@@ -36,7 +36,7 @@ export default function BubbleView() {
   const handleIngredientToggle = (ingredientId, categoryName) => {
     setSelectedIngredients(prev => {
       const newSelection = { ...prev };
-  
+
       if (newSelection[categoryName]?.has(ingredientId)) {
         newSelection[categoryName].delete(ingredientId);
         if (newSelection[categoryName].size === 0) {
@@ -94,7 +94,7 @@ export default function BubbleView() {
       state: 0,
       ingredients: formattedIngredients,
     };
-    
+
     SweetAlertQuestion(
       'Crear Bubble',
       `¿Desea crear el bubble té personalizado?`,
@@ -102,7 +102,7 @@ export default function BubbleView() {
         dispatch(addRecipe(recipe))
           .unwrap()
           .then((response) => {
-            
+
             const product = {
               id: new Date().getTime(),
               idRecipe: response.id,
@@ -129,29 +129,31 @@ export default function BubbleView() {
       {loading ?
         <Spinner />
         :
-        <div className="m-4 p-6 bg-gradient-to-b from-blue-200 via-blue-100 to-purple-100 relative">
-          <Title level={2} className="text-center text-blue-800 font-extrabold mb-8 text-2xl tracking-wider">
-            ELEGIR CATEGORÍA
-          </Title>
+        <div className='flex flex-col min-h-screen'>
+          <div className="m-4 p-6 bg-gradient-to-b from-blue-200 via-blue-100 to-purple-100 relative">
+            <Title level={2} className="text-center text-blue-800 font-extrabold mb-8 text-2xl tracking-wider">
+              ELEGIR CATEGORÍA
+            </Title>
 
-          <Text className="block text-center text-blue-600 font-medium mb-6 text-lg">
-            Selecciona los ingredientes para cada categoría que desees incluir en este Bubble.
-          </Text>
+            <Text className="block text-center text-blue-600 font-medium mb-6 text-lg">
+              Selecciona los ingredientes para cada categoría que desees incluir en este Bubble.
+            </Text>
 
-          <Collapse items={collapseItems} accordion bordered={false} className="bg-white shadow-lg rounded-lg" />
+            <Collapse items={collapseItems} accordion bordered={false} className="bg-white shadow-lg rounded-lg" />
 
-          {/* Botón para crear el Bubble */}
-          <div className="flex justify-center mt-8">
-            <Button
-              type="primary"
-              size="large"
-              disabled={isButtonDisabled}
-              onClick={handleAddRecipe}
-              className={`${isButtonDisabled ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700'
-                } text-white font-bold py-3 px-6 rounded-full transition duration-200 ease-in-out`}
-            >
-              Crear Bubble
-            </Button>
+            {/* Botón para crear el Bubble */}
+            <div className="flex justify-center mt-8">
+              <Button
+                type="primary"
+                size="large"
+                disabled={isButtonDisabled}
+                onClick={handleAddRecipe}
+                className={`${isButtonDisabled ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700'
+                  } text-white font-bold py-3 px-6 rounded-full transition duration-200 ease-in-out`}
+              >
+                Crear Bubble
+              </Button>
+            </div>
           </div>
         </div>
       }

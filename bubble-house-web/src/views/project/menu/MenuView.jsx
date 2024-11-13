@@ -97,7 +97,7 @@ export default function MenuView() {
       {loading ?
         <Spinner />
         :
-        <div className=" w-full">
+        <div className="flex flex-col min-h-screen w-full">
           <div className="bg-white px-4 py-2 w-full">
             <div className="border border-gray-300 p-2 rounded-lg shadow-lg overflow-hidden">
               <Carousel responsive={responsive}>

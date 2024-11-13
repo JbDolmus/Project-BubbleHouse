@@ -180,7 +180,7 @@ export default function OrderView() {
       {loading ?
         <Spinner />
         :
-        <>
+        <div className='felx flex-col items-center min-h-screen w-full'>
           <div className="bg-white px-4 py-2 w-full">
             <div className="flex justify-evenly gap-2 border border-gray-300 rounded-lg shadow-lg overflow-hidden">
               <button
@@ -198,7 +198,7 @@ export default function OrderView() {
               </button>
             </div>
           </div>
-          <h1 className="text-4xl font-bold text-white my-1">Pedidos por {isCobro === 'Cobrar' ? 'Cobrar' : 'Preparar'}</h1>
+          <h1 className="text-4xl text-center font-bold text-white my-1">Pedidos por {isCobro === 'Cobrar' ? 'Cobrar' : 'Preparar'}</h1>
 
           <div className="flex flex-col items-center justify-center w-full p-4 gap-4">
             {isCobro === 'Cobrar' ?
@@ -513,7 +513,7 @@ export default function OrderView() {
               )
             }
           </div>
-        </>
+        </div>
       }
     </>
   )

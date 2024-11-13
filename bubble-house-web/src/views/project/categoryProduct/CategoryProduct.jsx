@@ -77,7 +77,7 @@ export default function CategoryProduct() {
                         </Tooltip>
                     </div>
 
-                    <div className="flex flex-col items-center min-h-screen px-6">
+                    <div className="flex flex-col items-center min-h-screen p-6">
 
                         <h1 className="text-4xl font-bold text-white mb-6">Listado de Categorías</h1>
                         <div className="flex flex-col items-center gap-3 mb-4 md:flex-row md:justify-start w-full max-w-4xl">
